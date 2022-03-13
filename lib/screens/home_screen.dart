@@ -65,7 +65,7 @@ class HomeScreen extends HookConsumerWidget {
                         'Pantry',
                         style: TextStyle(
                           color: Colors.grey.shade700,
-                          fontSize: 30,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -93,7 +93,7 @@ class HomeScreen extends HookConsumerWidget {
                         'Memo',
                         style: TextStyle(
                           color: Colors.grey.shade700,
-                          fontSize: 30,
+                          fontSize: 20,
                         ),
                       ),
                     ),

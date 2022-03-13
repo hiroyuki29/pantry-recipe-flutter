@@ -25,7 +25,7 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
               child: Text(
                 'Pantry Recipe',
                 style: TextStyle(
-                  fontSize: 100,
+                  fontSize: 70,
                 ),
               ),
             ),
