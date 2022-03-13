@@ -25,7 +25,7 @@ class CategoryViewController {
   }
 
   int toggleCategorySelect(index) {
-    final List<String> categoryList = ['野菜', '肉', '魚', '加工品', '飲み物', '日用品', 'その他'];
+    // final List<String> categoryList = ['野菜', '肉', '魚', '加工品', '飲み物', '日用品', 'その他'];
     List<bool> selectedState = _read(isSelectedState.notifier).state;
     selectedState = [
       for (var i = 0; i < selectedState.length; i++)

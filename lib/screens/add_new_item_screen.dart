@@ -90,7 +90,7 @@ class AddNewItemScreen extends HookConsumerWidget {
                 onPressed: (int index) {
                   categoryId = ref
                       .read(categoryViewController)
-                      .toggleCategorySelect(index);
+                      .toggleCategorySelect(index) + 1;
                 },
                 isSelected: isSelectedList,
               ),
