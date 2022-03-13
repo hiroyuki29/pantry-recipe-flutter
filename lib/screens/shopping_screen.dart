@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/components/rounded_button.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
@@ -78,6 +79,7 @@ class ShoppingListTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: CheckboxListTile(
+        tileColor: tileColorList[memoItem.categoryId],
         value: memoItem.done,
         onChanged: (bool? value) async {
           await ref.read(memoItemViewController).toggleDoneStatus(memoItem);

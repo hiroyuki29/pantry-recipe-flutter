@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
@@ -31,7 +32,7 @@ class PantryRegisterScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pantry登録'),
+        title: const Text('パントリー登録'),
         actions: const [
           IconButtonForSignOut(),
         ],
@@ -44,19 +45,40 @@ class PantryRegisterScreen extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    primary: false,
-                    itemCount: pantryItemList.length,
-                    itemBuilder: (context, int index) =>
-                        PantryRegisterTile(pantryItem: pantryItemList[index]),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('現在の状況'),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          itemCount: pantryItemList.length,
+                          itemBuilder: (context, int index) =>
+                              PantryRegisterTile(
+                                  pantryItem: pantryItemList[index]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    primary: false,
-                    itemCount: itemList.length,
-                    itemBuilder: (context, int index) =>
-                        ItemToPantryTile(item: itemList[index]),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('登録用アイテム'),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          itemCount: itemList.length,
+                          itemBuilder: (context, int index) =>
+                              ItemToPantryTile(item: itemList[index]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -78,8 +100,9 @@ class ItemToPantryTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[item.categoryId],
         title: Text(item.name),
-        leading: Text('単位:${item.unitQuantity}'),
+        trailing: Text('数量:${item.unitQuantity}'),
         onTap: () async {
           String? pantryItemId =
               ref.read(pantryViewController).alreadyIncludeCheck(item.toMap());
@@ -110,6 +133,7 @@ class PantryRegisterTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[pantryItem.categoryId],
         title: Text(pantryItem.name),
         trailing: Text('数量:${pantryItem.quantity.toString()}'),
       ),

@@ -4,7 +4,7 @@ import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 
 void main() {
   runApp(
-    ProviderScope(
+    const ProviderScope(
       child: MyApp(),
     ),
   );
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Pantry Recipe',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

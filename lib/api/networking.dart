@@ -4,6 +4,7 @@ class NetworkHelper {
   NetworkHelper();
 
   final String apiBaseUrl = 'https://nasuhiro-pantry-recipe.herokuapp.com/v1/';
+  // final String apiBaseUrl = 'http://localhost:3000/v1/';
 
   Future getData(
       {required String urlInput,

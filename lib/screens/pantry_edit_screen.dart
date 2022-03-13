@@ -43,7 +43,7 @@ class PantryEditScreen extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              '数量編集　${pantryItem.name}',
+              '数量変更　${pantryItem.name}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 30.0,

@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
+import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/entity/master_food.dart';
 import 'package:pantry_recipe_flutter/repository/item_repository.dart';
 import 'package:pantry_recipe_flutter/repository/master_food_repository.dart';
@@ -24,7 +25,6 @@ class ItemRegisterScreen extends HookConsumerWidget {
       ref.read(masterFoodViewController).initState();
       return ref.read(userItemViewController).dispose;
     }, []);
-    final textController = useTextEditingController();
     final List<Item>? itemList = ref.watch(userItemListState);
     final List<MasterFood>? masterFoodList = ref.watch(masterFoodListState);
     if (itemList == null) {
@@ -36,7 +36,7 @@ class ItemRegisterScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Item登録'),
+        title: const Text('アイテム登録'),
         actions: const [
           IconButtonForSignOut(),
         ],
@@ -63,19 +63,39 @@ class ItemRegisterScreen extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    primary: false,
-                    itemCount: itemList.length,
-                    itemBuilder: (context, int index) =>
-                        ItemTile(item: itemList[index]),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('登録アイテム'),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          itemCount: itemList.length,
+                          itemBuilder: (context, int index) =>
+                              ItemTile(item: itemList[index]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    primary: false,
-                    itemCount: masterFoodList.length,
-                    itemBuilder: (context, int index) =>
-                        MasterFoodTile(masterFood: masterFoodList[index]),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('ベース食材'),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          itemCount: masterFoodList.length,
+                          itemBuilder: (context, int index) =>
+                              MasterFoodTile(masterFood: masterFoodList[index]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -97,14 +117,15 @@ class ItemTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[item.categoryId],
         title: Text(item.name),
         subtitle: Text('[単位] ${item.unitQuantity.toString()}'),
-        trailing: OutlinedButton(
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
           onPressed: () async {
             await ref.read(itemRepository).deleteItem(item);
             ref.read(userItemViewController).initState();
           },
-          child: const Text('削除'),
         ),
       ),
     );
@@ -120,6 +141,7 @@ class MasterFoodTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[masterFood.categoryId],
         title: Text(masterFood.name),
         subtitle: Text('[単位] ${masterFood.unitQuantity.toString()}'),
         onTap: () async {

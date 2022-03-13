@@ -13,7 +13,7 @@ class HomeScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home screen'),
+        title: const Text('Pantry Recipe'),
         actions: const [
           IconButtonForSignOut(),
         ],
@@ -31,46 +31,72 @@ class HomeScreen extends HookConsumerWidget {
                 const SizedBox(
                   width: 30,
                 ),
+                // Expanded(
+                //   child: ElevatedButton(
+                //     onPressed: () async {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => const HomeScreen()),
+                //       );
+                //     },
+                //     child: const Text('Recipe'),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   width: 30,
+                // ),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
-                      );
-                    },
-                    child: const Text('Recipe'),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.pink.shade50),
+                      ),
+                      onPressed: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PantryShowScreen()),
+                        );
+                      },
+                      child: Text(
+                        'Pantry',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 30,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(
                   width: 30,
                 ),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PantryShowScreen()),
-                      );
-                    },
-                    child: const Text('Pantry'),
-                  ),
-                ),
-                const SizedBox(
-                  width: 30,
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MemoIndexScreen()),
-                      );
-                    },
-                    child: const Text('Memo'),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.orange.shade50),
+                      ),
+                      onPressed: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MemoIndexScreen()),
+                        );
+                      },
+                      child: Text(
+                        'Memo',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 30,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(

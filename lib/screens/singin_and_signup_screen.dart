@@ -8,7 +8,6 @@ import 'package:pantry_recipe_flutter/repository/user_repository.dart';
 import 'package:pantry_recipe_flutter/screens/home_screen.dart';
 
 class SignInAndSingUpScreen extends HookConsumerWidget {
-  static const id = 'login_screen';
   String? email;
   String? password;
 
@@ -66,9 +65,8 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HomeScreen())
-                  );
-                } catch(e) {
+                          builder: (context) => const HomeScreen()));
+                } catch (e) {
                   Fluttertoast.showToast(msg: "ログインに失敗しました");
                 }
               },
@@ -83,9 +81,8 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HomeScreen())
-                  );
-                } catch(e) {
+                          builder: (context) => const HomeScreen()));
+                } catch (e) {
                   Fluttertoast.showToast(msg: "新規登録に失敗しました");
                 }
               },

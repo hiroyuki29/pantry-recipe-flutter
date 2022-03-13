@@ -29,7 +29,7 @@ class MemoIndexScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Memo_index'),
+        title: const Text('買い物メモリスト'),
         actions: const [
           IconButtonForSignOut(),
         ],
@@ -146,6 +146,7 @@ class UserMemoTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: Colors.grey.shade100,
         title: Text(memo.name),
         subtitle: Text('password: ${memo.password}'),
         trailing: Row(

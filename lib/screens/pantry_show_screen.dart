@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
@@ -25,7 +26,7 @@ class PantryShowScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pantry'),
+        title: const Text('パントリー'),
         actions: const [
           IconButtonForSignOut(),
         ],
@@ -39,8 +40,7 @@ class PantryShowScreen extends HookConsumerWidget {
               MaterialPageRoute(
                   builder: (context) => const PantryRegisterScreen()),
             );
-          }
-      ),
+          }),
       body: Column(
         children: [
           Expanded(
@@ -67,33 +67,35 @@ class PantryItemTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[pantryItem.categoryId],
         title: Text(pantryItem.name),
         subtitle: Text('数量: ${pantryItem.quantity}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            OutlinedButton(
+            IconButton(
+              icon: const Icon(Icons.edit),
               onPressed: () async {
                 showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     builder: (context) => SingleChildScrollView(
-                        child:Container(
-                          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                            child: Container(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
                           child: PantryEditScreen(pantryItem),
-                        )
-                    )
-                );
+                        )));
               },
-              child: const Text('編集'),
             ),
-            const SizedBox(width: 20,),
-            OutlinedButton(
+            const SizedBox(
+              width: 20,
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
               onPressed: () async {
                 await ref.read(pantryRepository).deletePantryItem(pantryItem);
                 ref.read(pantryViewController).initState();
               },
-              child: const Text('削除'),
             ),
           ],
         ),

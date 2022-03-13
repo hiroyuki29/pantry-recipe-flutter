@@ -44,7 +44,7 @@ class AddNewItemScreen extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             const Text(
-              'Add Item',
+              'アイテム追加',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 30.0,

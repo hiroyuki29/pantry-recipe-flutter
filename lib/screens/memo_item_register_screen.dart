@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
+import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
@@ -46,21 +47,41 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    primary: false,
-                    itemCount: memoItemList.length,
-                    itemBuilder: (context, int index) =>
-                        MemoRegisterTile(memoItem: memoItemList[index]),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('買い物リスト'),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          itemCount: memoItemList.length,
+                          itemBuilder: (context, int index) =>
+                              MemoRegisterTile(memoItem: memoItemList[index]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    primary: false,
-                    itemCount: itemList.length,
-                    itemBuilder: (context, int index) => ItemToPantryTile(
-                      item: itemList[index],
-                      memoId: memoId,
-                    ),
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('登録アイテム'),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          itemCount: itemList.length,
+                          itemBuilder: (context, int index) => ItemToPantryTile(
+                            item: itemList[index],
+                            memoId: memoId,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -83,8 +104,9 @@ class ItemToPantryTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[item.categoryId],
         title: Text(item.name),
-        trailing: Text('数量:${item.unitQuantity}'),
+        subtitle: Text('数量:${item.unitQuantity}'),
         onTap: () async {
           String? memoItemId = ref
               .read(memoItemViewController)
@@ -117,8 +139,9 @@ class MemoRegisterTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
+        tileColor: tileColorList[memoItem.categoryId],
         title: Text(memoItem.name),
-        trailing: Text('数量:${memoItem.quantity.toString()}'),
+        subtitle: Text('数量:${memoItem.quantity.toString()}'),
       ),
     );
   }
