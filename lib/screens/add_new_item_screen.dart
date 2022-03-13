@@ -21,7 +21,6 @@ class AddNewItemScreen extends HookConsumerWidget {
       ref.read(categoryViewController).initState();
       return ref.read(categoryViewController).dispose;
     }, []);
-    final textController = useTextEditingController();
     final List<Category>? categoryList = ref.watch(categoryListState);
     if (categoryList == null) {
       return Container(child: const Center(child: CircularProgressIndicator()));
@@ -83,6 +82,7 @@ class AddNewItemScreen extends HookConsumerWidget {
                   Text('野菜'),
                   Text('肉'),
                   Text('魚'),
+                  Text('加工品'),
                   Text('飲み物'),
                   Text('日用品'),
                   Text('その他'),

@@ -5,7 +5,7 @@ import 'package:pantry_recipe_flutter/repository/category_repository.dart';
 final categoryListState = StateProvider<List<Category>?>((ref) => null);
 
 final isSelectedState = StateProvider<List<bool>>(
-    (ref) => [true, false, false, false, false, false]);
+    (ref) => [true, false, false, false, false, false, false]);
 
 final categoryViewController =
     Provider.autoDispose((ref) => CategoryViewController(ref.read));
@@ -25,7 +25,7 @@ class CategoryViewController {
   }
 
   int toggleCategorySelect(index) {
-    final List<String> categoryList = ['野菜', '肉', '魚', '飲み物', '日用品', 'その他'];
+    final List<String> categoryList = ['野菜', '肉', '魚', '加工品', '飲み物', '日用品', 'その他'];
     List<bool> selectedState = _read(isSelectedState.notifier).state;
     selectedState = [
       for (var i = 0; i < selectedState.length; i++)
@@ -38,6 +38,7 @@ class CategoryViewController {
   void resetCategorySelect() {
     _read(isSelectedState.notifier).state = [
       true,
+      false,
       false,
       false,
       false,
