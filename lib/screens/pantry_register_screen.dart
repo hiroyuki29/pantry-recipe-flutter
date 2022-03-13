@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
-import 'package:pantry_recipe_flutter/repository/user_repository.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
-import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 
 class PantryRegisterScreen extends HookConsumerWidget {
@@ -21,7 +20,6 @@ class PantryRegisterScreen extends HookConsumerWidget {
       ref.read(pantryViewController).initState();
       return ref.read(userItemViewController).dispose;
     }, []);
-    final textController = useTextEditingController();
     final List<Item>? itemList = ref.watch(userItemListState);
     final List<PantryItem>? pantryItemList = ref.watch(pantryItemListState);
     if (itemList == null) {
@@ -34,19 +32,8 @@ class PantryRegisterScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pantry登録'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              ref.read(userRepository).signOutUser();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignInAndSingUpScreen(),
-                ),
-              );
-            },
-          )
+        actions: const [
+          IconButtonForSignOut(),
         ],
       ),
       body: Column(
@@ -77,7 +64,7 @@ class PantryRegisterScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigator(),
+      bottomNavigationBar: const BottomNavigator(),
     );
   }
 }
@@ -95,12 +82,17 @@ class ItemToPantryTile extends HookConsumerWidget {
         leading: Text('単位:${item.unitQuantity}'),
         onTap: () async {
           String? pantryItemId =
-          ref.read(pantryViewController).alreadyIncludeCheck(item.toMap());
+              ref.read(pantryViewController).alreadyIncludeCheck(item.toMap());
           if (pantryItemId != null) {
-            await ref.read(pantryRepository).incrementPantryItemQuantity(pantryItemId, item.unitQuantity);
+            await ref
+                .read(pantryRepository)
+                .incrementPantryItemQuantity(pantryItemId, item.unitQuantity);
           } else {
-            Map<String, dynamic> bodyInput = await ref.read(pantryViewController).makeBodyInput(item);
-            await ref.read(pantryRepository).savePantryItem(jsonEncode(bodyInput));
+            Map<String, dynamic> bodyInput =
+                await ref.read(pantryViewController).makeBodyInput(item);
+            await ref
+                .read(pantryRepository)
+                .savePantryItem(jsonEncode(bodyInput));
           }
           ref.read(pantryViewController).initState();
         },
@@ -119,9 +111,7 @@ class PantryRegisterTile extends HookConsumerWidget {
     return Card(
       child: ListTile(
         title: Text(pantryItem.name),
-        // leading: Text('id:${pantryItem.id} category:${pantryItem.categoryId.toString()}'),
         trailing: Text('数量:${pantryItem.quantity.toString()}'),
-
       ),
     );
   }

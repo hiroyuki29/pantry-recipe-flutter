@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/api/networking.dart';
-import 'package:pantry_recipe_flutter/viewModels/item_view_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final userItemRepository =
@@ -49,7 +48,6 @@ class UserItemRepositoryImpl implements UserItemRepository {
         urlInput: 'items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
     dynamic responseBody = response['body'];
     dynamic responseData = jsonDecode(responseBody)['data'];
-    // int itemId = responseData['id'];
     bodyInputMap['item_id'] = responseData['id'];
     await networkHelper.postData(
         urlInput: 'user_items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));

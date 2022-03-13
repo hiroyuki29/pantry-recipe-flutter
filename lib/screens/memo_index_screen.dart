@@ -1,19 +1,14 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/memo.dart';
-import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 import 'package:pantry_recipe_flutter/repository/user_memo_repository.dart';
-import 'package:pantry_recipe_flutter/repository/user_repository.dart';
-import 'package:pantry_recipe_flutter/entity/item.dart';
-import 'package:pantry_recipe_flutter/viewModels/item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_memo_view_controller.dart';
 import 'package:pantry_recipe_flutter/screens/shopping_screen.dart';
-import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 import 'package:pantry_recipe_flutter/screens/memo_item_register_screen.dart';
 
 class MemoIndexScreen extends HookConsumerWidget {
@@ -35,19 +30,8 @@ class MemoIndexScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Memo_index'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              ref.read(userRepository).signOutUser();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignInAndSingUpScreen(),
-                ),
-              );
-            },
-          )
+        actions: const [
+          IconButtonForSignOut(),
         ],
       ),
       body: Column(
@@ -72,8 +56,7 @@ class MemoIndexScreen extends HookConsumerWidget {
                   onChanged: (value) {
                     memoName = value;
                   },
-                  decoration:
-                  kInputTextDecoration.copyWith(hintText: 'Name'),
+                  decoration: kInputTextDecoration.copyWith(hintText: 'Name'),
                 ),
                 const SizedBox(
                   height: 10,
@@ -85,7 +68,7 @@ class MemoIndexScreen extends HookConsumerWidget {
                     password = value;
                   },
                   decoration:
-                  kInputTextDecoration.copyWith(hintText: 'password'),
+                      kInputTextDecoration.copyWith(hintText: 'password'),
                 ),
                 const SizedBox(
                   height: 10,
@@ -95,15 +78,17 @@ class MemoIndexScreen extends HookConsumerWidget {
                   children: [
                     OutlinedButton(
                       onPressed: () async {
-                        if (memoName == '' || password == ''){
+                        if (memoName == '' || password == '') {
                           Fluttertoast.showToast(msg: "空欄があります");
                         } else {
-                          Map<String, dynamic> bodyInput = await ref.read(
-                              userMemoViewController).makeBodyInput(
-                              name: memoName, password: password);
-                          bool registerResult = await ref.read(userMemoRepository).saveUserMemo(
-                              bodyInput);
-                          if (registerResult){
+                          Map<String, dynamic> bodyInput = await ref
+                              .read(userMemoViewController)
+                              .makeBodyInput(
+                                  name: memoName, password: password);
+                          bool registerResult = await ref
+                              .read(userMemoRepository)
+                              .saveUserMemo(bodyInput);
+                          if (registerResult) {
                             Fluttertoast.showToast(msg: "登録成功");
                             ref.read(userMemoViewController).initState();
                           } else {
@@ -114,18 +99,22 @@ class MemoIndexScreen extends HookConsumerWidget {
                       },
                       child: const Text('登録'),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(
+                      width: 20,
+                    ),
                     OutlinedButton(
                       onPressed: () async {
-                        if (memoName == '' || password == ''){
+                        if (memoName == '' || password == '') {
                           Fluttertoast.showToast(msg: "空欄があります");
                         } else {
-                          Map<String, dynamic> bodyInput = await ref.read(
-                              userMemoViewController).makeBodyInput(
-                              name: memoName, password: password);
-                          bool searchResult = await ref.read(userMemoRepository).searchMemo(
-                              bodyInput);
-                          if (searchResult){
+                          Map<String, dynamic> bodyInput = await ref
+                              .read(userMemoViewController)
+                              .makeBodyInput(
+                                  name: memoName, password: password);
+                          bool searchResult = await ref
+                              .read(userMemoRepository)
+                              .searchMemo(bodyInput);
+                          if (searchResult) {
                             Fluttertoast.showToast(msg: "検索成功");
                             ref.read(userMemoViewController).initState();
                           } else {
@@ -143,7 +132,7 @@ class MemoIndexScreen extends HookConsumerWidget {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigator(),
+      bottomNavigationBar: const BottomNavigator(),
     );
   }
 }
@@ -168,7 +157,8 @@ class UserMemoTile extends HookConsumerWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MemoItemRegisterScreen(memoId: memo.id)),
+                      builder: (context) =>
+                          MemoItemRegisterScreen(memoId: memo.id)),
                 );
               },
             ),
@@ -182,7 +172,7 @@ class UserMemoTile extends HookConsumerWidget {
             ),
           ],
         ),
-        onTap: (){
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(

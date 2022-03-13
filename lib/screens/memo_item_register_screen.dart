@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
-import 'package:pantry_recipe_flutter/repository/user_repository.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/memo_item_view_controller.dart';
-import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 import 'package:pantry_recipe_flutter/repository/memo_item_repository.dart';
 
 class MemoItemRegisterScreen extends HookConsumerWidget {
@@ -35,19 +34,8 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('買い物メモ登録'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              ref.read(userRepository).signOutUser();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignInAndSingUpScreen(),
-                ),
-              );
-            },
-          )
+        actions: const [
+          IconButtonForSignOut(),
         ],
       ),
       body: Column(
@@ -69,8 +57,10 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
                   child: ListView.builder(
                     primary: false,
                     itemCount: itemList.length,
-                    itemBuilder: (context, int index) =>
-                        ItemToPantryTile(item: itemList[index], memoId: memoId,),
+                    itemBuilder: (context, int index) => ItemToPantryTile(
+                      item: itemList[index],
+                      memoId: memoId,
+                    ),
                   ),
                 ),
               ],
@@ -78,7 +68,7 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigator(),
+      bottomNavigationBar: const BottomNavigator(),
     );
   }
 }
@@ -96,13 +86,20 @@ class ItemToPantryTile extends HookConsumerWidget {
         title: Text(item.name),
         trailing: Text('数量:${item.unitQuantity}'),
         onTap: () async {
-          String? memoItemId =
-          ref.read(memoItemViewController).alreadyIncludeCheck(item.toMap());
+          String? memoItemId = ref
+              .read(memoItemViewController)
+              .alreadyIncludeCheck(item.toMap());
           if (memoItemId != null) {
-            await ref.read(memoItemRepository).incrementMemoItemQuantity(memoItemId, item.unitQuantity);
+            await ref
+                .read(memoItemRepository)
+                .incrementMemoItemQuantity(memoItemId, item.unitQuantity);
           } else {
-            Map<String, dynamic> bodyInput = await ref.read(memoItemViewController).makeBodyInput(item, memoId);
-            await ref.read(memoItemRepository).saveMemoItem(jsonEncode(bodyInput));
+            Map<String, dynamic> bodyInput = await ref
+                .read(memoItemViewController)
+                .makeBodyInput(item, memoId);
+            await ref
+                .read(memoItemRepository)
+                .saveMemoItem(jsonEncode(bodyInput));
           }
           ref.read(memoItemViewController).initState(memoId: memoId);
         },
@@ -121,9 +118,7 @@ class MemoRegisterTile extends HookConsumerWidget {
     return Card(
       child: ListTile(
         title: Text(memoItem.name),
-        // leading: Text('id:${memoItem.id} category:${memoItem.categoryId.toString()}'),
         trailing: Text('数量:${memoItem.quantity.toString()}'),
-
       ),
     );
   }

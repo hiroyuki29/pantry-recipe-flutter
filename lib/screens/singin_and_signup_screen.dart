@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,12 +17,20 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(
+            const Center(
+              child: Text(
+                'Pantry Recipe',
+                style: TextStyle(
+                  fontSize: 100,
+                ),
+              ),
+            ),
+            const SizedBox(
               height: 48.0,
             ),
             TextField(
@@ -35,7 +42,7 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
               decoration:
                   kInputTextDecoration.copyWith(hintText: 'Enter your email'),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8.0,
             ),
             TextField(
@@ -46,7 +53,7 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
               },
               decoration: kInputTextDecoration,
             ),
-            SizedBox(
+            const SizedBox(
               height: 24.0,
             ),
             RoundedButton(

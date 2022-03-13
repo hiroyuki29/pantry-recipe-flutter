@@ -1,5 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 class Category {
   final int id;
   final String name;
@@ -12,22 +10,14 @@ class Category {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          (other is Category &&
-              runtimeType == other.runtimeType &&
-              name == other.name &&
-              id == other.id
-          );
-
-  @override
-  int get hashCode =>
-      name.hashCode ^ id.hashCode;
+      (other is Category &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          id == other.id);
 
   @override
   String toString() {
-    return 'Item{' +
-        ' name: $name,' +
-        ' id: $id,' +
-        '}';
+    return 'Item{' + ' name: $name,' + ' id: $id,' + '}';
   }
 
   Category copyWith({

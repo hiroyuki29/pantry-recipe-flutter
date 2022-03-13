@@ -1,11 +1,7 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 class Memo {
   final int id;
   final String name;
   final String password;
-
-//<editor-fold desc="Data Methods">
 
   Memo({
     required this.id,
@@ -22,10 +18,6 @@ class Memo {
               id == other.id &&
               password == other.password
           );
-
-  @override
-  int get hashCode =>
-      name.hashCode ^ id.hashCode^ password.hashCode;
 
   @override
   String toString() {

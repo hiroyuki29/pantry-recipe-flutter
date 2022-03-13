@@ -1,18 +1,14 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pantry_recipe_flutter/repository/memo_item_repository.dart';
 import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
-import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
 
 final memoItemListState = StateProvider<List<MemoItem>?>((ref) => null);
 
 final memoItemViewController =
-Provider.autoDispose((ref) => MemoItemViewController(ref.read));
+    Provider.autoDispose((ref) => MemoItemViewController(ref.read));
 
 class MemoItemViewController {
   final Reader _read;
@@ -22,7 +18,7 @@ class MemoItemViewController {
   Future<void> initState({required int memoId}) async {
     _read(memoItemListState)?.clear();
     _read(memoItemListState.notifier).state =
-    await _read(memoItemRepository).getMemoItemList(memoId);
+        await _read(memoItemRepository).getMemoItemList(memoId);
   }
 
   void dispose() {
@@ -53,7 +49,7 @@ class MemoItemViewController {
   Future<Map<String, dynamic>> makeBodyInputForToggle(MemoItem memoItem) async {
     final prefs = await SharedPreferences.getInstance();
     return {
-      'id':memoItem.id,
+      'id': memoItem.id,
       'memo_id': memoItem.memoId,
       'item_id': memoItem.itemId,
       'quantity': memoItem.quantity,
@@ -79,51 +75,19 @@ class MemoItemViewController {
 
   Future<void> toggleDoneStatus(MemoItem memoItem) async {
     memoItem.done = !memoItem.done;
-    Map<String, dynamic> bodyInput = await _read(memoItemViewController).makeBodyInputForToggle(memoItem);
+    Map<String, dynamic> bodyInput =
+        await _read(memoItemViewController).makeBodyInputForToggle(memoItem);
     await _read(memoItemRepository).updateMemoItem(bodyInput);
   }
 
   Future<void> moveMemoItemToPantry(List<MemoItem> memoItemList) async {
     for (MemoItem memoItem in memoItemList) {
       if (memoItem.done) {
-        Map<String, dynamic> bodyInput = await _read(memoItemViewController).makeBodyInputFromMemo(memoItem);
+        Map<String, dynamic> bodyInput =
+            await _read(memoItemViewController).makeBodyInputFromMemo(memoItem);
         await _read(pantryRepository).moveFromMemo(bodyInput);
         await _read(memoItemRepository).deleteMemoItem(memoItem);
       }
     }
   }
-
-// Future<void> addTodo(TextEditingController textController) async {
-//   final String text = textController.text;
-//   if (text.trim().isEmpty) {
-//     return;
-//   }
-//   textController.text = '';
-//   final now = DateTime.now();
-//   final newTodo = Todo(
-//     content: text,
-//     done: false,
-//     timestamp: now,
-//     id: "${now.millisecondsSinceEpoch}",
-//   );
-//   final List<Todo> newTodoList = [newTodo, ...(_read(_todoListState) ?? [])];
-//   _read(_todoListState.notifier).state = newTodoList;
-//   await _read(todoRepository).saveTodoList(newTodoList);
-// }
-
-// Future<void> toggleDoneStatus(Todo todo) async {
-//   final List<Todo> newTodoList = [
-//     ...(_read(_todoListState) ?? [])
-//         .map((e) => (e.id == todo.id) ? e.copyWith(done: !e.done) : e)
-//   ];
-//   _read(_todoListState.notifier).state = newTodoList;
-//   await _read(todoRepository).saveTodoList(newTodoList);
-// }
-//
-// void toggleSortOrder() {
-//   _read(_sortOrderState.notifier).state =
-//   _read(_sortOrderState) == SortOrder.ASC
-//       ? SortOrder.DESC
-//       : SortOrder.ASC;
-// }
 }

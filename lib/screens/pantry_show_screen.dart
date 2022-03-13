@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
-import 'package:pantry_recipe_flutter/repository/user_repository.dart';
 import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
 import 'package:pantry_recipe_flutter/screens/pantry_register_screen.dart';
-import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 import 'package:pantry_recipe_flutter/screens/pantry_edit_screen.dart';
 
 class PantryShowScreen extends HookConsumerWidget {
@@ -27,24 +26,13 @@ class PantryShowScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pantry'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              ref.read(userRepository).signOutUser();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignInAndSingUpScreen(),
-                ),
-              );
-            },
-          )
+        actions: const [
+          IconButtonForSignOut(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.lightBlueAccent,
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
           onPressed: () {
             Navigator.push(
               context,

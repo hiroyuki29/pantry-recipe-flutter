@@ -4,16 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/master_food.dart';
 import 'package:pantry_recipe_flutter/repository/item_repository.dart';
 import 'package:pantry_recipe_flutter/repository/master_food_repository.dart';
 import 'package:pantry_recipe_flutter/repository/user_item_repository.dart';
-import 'package:pantry_recipe_flutter/repository/user_repository.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/master_food_view_controller.dart';
 import 'package:pantry_recipe_flutter/screens/add_new_item_screen.dart';
-import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 
 class ItemRegisterScreen extends HookConsumerWidget {
   const ItemRegisterScreen({Key? key}) : super(key: key);
@@ -38,37 +37,24 @@ class ItemRegisterScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Item登録'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              ref.read(userRepository).signOutUser();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignInAndSingUpScreen(),
-                ),
-              );
-            },
-          )
+        actions: const [
+          IconButtonForSignOut(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.lightBlueAccent,
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
           onPressed: () {
             showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 builder: (context) => SingleChildScrollView(
-                    child:Container(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: AddNewItemScreen(),
-                    )
-                )
-            );
-          }
-      ),
+                    )));
+          }),
       body: Column(
         children: [
           Expanded(
@@ -97,7 +83,7 @@ class ItemRegisterScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigator(),
+      bottomNavigationBar: const BottomNavigator(),
     );
   }
 }
@@ -113,10 +99,8 @@ class ItemTile extends HookConsumerWidget {
       child: ListTile(
         title: Text(item.name),
         subtitle: Text('[単位] ${item.unitQuantity.toString()}'),
-        // leading: Text(item.categoryId.toString()),
         trailing: OutlinedButton(
           onPressed: () async {
-            // await ref.read(userItemRepository).deleteUserItem(item);
             await ref.read(itemRepository).deleteItem(item);
             ref.read(userItemViewController).initState();
           },
@@ -140,15 +124,16 @@ class MasterFoodTile extends HookConsumerWidget {
         subtitle: Text('[単位] ${masterFood.unitQuantity.toString()}'),
         onTap: () async {
           Map<String, dynamic> newItemMap =
-          await ref.read(masterFoodRepository).toItemMap(masterFood);
+              await ref.read(masterFoodRepository).toItemMap(masterFood);
           Map<String, dynamic> newUserItemMap =
-          await ref.read(masterFoodRepository).toUserItemMap(masterFood);
+              await ref.read(masterFoodRepository).toUserItemMap(masterFood);
           String? checkedResult =
-          ref.read(userItemViewController).alreadyIncludeCheck(newItemMap);
+              ref.read(userItemViewController).alreadyIncludeCheck(newItemMap);
           if (checkedResult != null) {
             Fluttertoast.showToast(msg: "すでにあります");
           } else {
-            int registerItemId = await ref.read(itemRepository).saveItem(jsonEncode(newItemMap));
+            int registerItemId =
+                await ref.read(itemRepository).saveItem(jsonEncode(newItemMap));
             newUserItemMap['item_id'] = registerItemId;
             await ref.read(userItemRepository).saveUserItem(newUserItemMap);
           }

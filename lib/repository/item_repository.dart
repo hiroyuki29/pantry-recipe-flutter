@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/api/networking.dart';
-import 'package:pantry_recipe_flutter/viewModels/item_view_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final itemRepository =
@@ -10,8 +9,11 @@ final itemRepository =
 
 abstract class ItemRepository {
   Future<List<Item>> getItemList();
+
   Future<int> saveItem(String bodyInput);
+
   Future<void> deleteItem(Item item);
+
   Future<void> incrementItemQuantity(String userId);
 }
 
@@ -64,7 +66,9 @@ class ItemRepositoryImpl implements ItemRepository {
     Map<String, dynamic> itemMap = item.toMap();
     String id = itemMap['id'].toString();
     await networkHelper.deleteData(
-        urlInput: 'items/$id', headerInput: _userHeader, bodyInput: jsonEncode(_userInfo));
+        urlInput: 'items/$id',
+        headerInput: _userHeader,
+        bodyInput: jsonEncode(_userInfo));
   }
 
   @override
@@ -76,15 +80,18 @@ class ItemRepositoryImpl implements ItemRepository {
     _userInfo['uid'] = prefs.getString('uid') ?? '';
     _userInfo['client'] = prefs.getString('client') ?? '';
     NetworkHelper networkHelper = NetworkHelper();
-    var responseData = await networkHelper.getData(urlInput: 'items/$itemId', headerInput: _userInfo);
+    var responseData = await networkHelper.getData(
+        urlInput: 'items/$itemId', headerInput: _userInfo);
     Map<String, dynamic> responseBody = jsonDecode(responseData['body']);
     Map<String, dynamic> bodyInputBeforeJson = responseBody['data'];
-    int beforeQuantity = bodyInputBeforeJson['unit_quantity'] ;
+    int beforeQuantity = bodyInputBeforeJson['unit_quantity'];
     bodyInputBeforeJson['unit_quantity'] = beforeQuantity + 1;
     bodyInputBeforeJson['access-token'] = prefs.getString('access-token') ?? '';
     bodyInputBeforeJson['uid'] = prefs.getString('uid') ?? '';
     bodyInputBeforeJson['client'] = prefs.getString('client') ?? '';
     await networkHelper.putData(
-        urlInput: 'items/$itemId', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputBeforeJson));
+        urlInput: 'items/$itemId',
+        headerInput: _userHeader,
+        bodyInput: jsonEncode(bodyInputBeforeJson));
   }
 }

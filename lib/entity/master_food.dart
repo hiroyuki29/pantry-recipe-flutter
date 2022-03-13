@@ -1,5 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 class MasterFood {
   final int id;
   final String name;
@@ -16,17 +14,12 @@ class MasterFood {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          (other is MasterFood &&
-              runtimeType == other.runtimeType &&
-              name == other.name &&
-              id == other.id &&
-              categoryId == other.categoryId &&
-              unitQuantity == other.unitQuantity
-          );
-
-  @override
-  int get hashCode =>
-      name.hashCode ^ id.hashCode ^ categoryId.hashCode ^ unitQuantity.hashCode;
+      (other is MasterFood &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          id == other.id &&
+          categoryId == other.categoryId &&
+          unitQuantity == other.unitQuantity);
 
   @override
   String toString() {

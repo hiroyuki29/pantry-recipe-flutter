@@ -1,5 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 class PantryItem {
   final int id;
   final String name;
@@ -7,8 +5,6 @@ class PantryItem {
   final int categoryId;
   final int? masterFoodId;
   final int quantity;
-
-//<editor-fold desc="Data Methods">
 
   PantryItem({
     required this.id,
@@ -22,19 +18,23 @@ class PantryItem {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          (other is PantryItem &&
-              runtimeType == other.runtimeType &&
-              name == other.name &&
-              id == other.id &&
-              itemId == other.itemId &&
-              categoryId == other.categoryId &&
-              masterFoodId == other.masterFoodId &&
-              quantity == other.quantity
-          );
+      (other is PantryItem &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          id == other.id &&
+          itemId == other.itemId &&
+          categoryId == other.categoryId &&
+          masterFoodId == other.masterFoodId &&
+          quantity == other.quantity);
 
   @override
   int get hashCode =>
-      name.hashCode ^ id.hashCode^ itemId.hashCode ^ categoryId.hashCode ^ masterFoodId.hashCode ^ quantity.hashCode;
+      name.hashCode ^
+      id.hashCode ^
+      itemId.hashCode ^
+      categoryId.hashCode ^
+      masterFoodId.hashCode ^
+      quantity.hashCode;
 
   @override
   String toString() {

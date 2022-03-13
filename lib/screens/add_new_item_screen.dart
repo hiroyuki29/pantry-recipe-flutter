@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,7 +8,6 @@ import 'package:pantry_recipe_flutter/entity/category.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/item_view_controller.dart';
 import 'package:pantry_recipe_flutter/constants.dart';
-
 
 class AddNewItemScreen extends HookConsumerWidget {
   int categoryId = 1;
@@ -33,10 +30,10 @@ class AddNewItemScreen extends HookConsumerWidget {
     final isSelectedList = ref.watch(isSelectedState);
 
     return Container(
-      color: Color(0xff757575),
+      color: const Color(0xff757575),
       child: Container(
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.all(20.0),
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
@@ -57,15 +54,14 @@ class AddNewItemScreen extends HookConsumerWidget {
             const SizedBox(
               height: 10,
             ),
-          TextField(
-            keyboardType: TextInputType.emailAddress,
-            textAlign: TextAlign.center,
-            onChanged: (value) {
-              name = value;
-            },
-            decoration:
-            kInputTextDecoration.copyWith(hintText: 'Name'),
-          ),
+            TextField(
+              keyboardType: TextInputType.emailAddress,
+              textAlign: TextAlign.center,
+              onChanged: (value) {
+                name = value;
+              },
+              decoration: kInputTextDecoration.copyWith(hintText: 'Name'),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -76,7 +72,7 @@ class AddNewItemScreen extends HookConsumerWidget {
                 unitQuantity = int.tryParse(value) ?? 0;
               },
               decoration:
-              kInputTextDecoration.copyWith(hintText: 'unit_quantity'),
+                  kInputTextDecoration.copyWith(hintText: 'unit_quantity'),
             ),
             const SizedBox(
               height: 10,
@@ -92,7 +88,9 @@ class AddNewItemScreen extends HookConsumerWidget {
                   Text('その他'),
                 ],
                 onPressed: (int index) {
-                  categoryId = ref.read(categoryViewController).toggleCategorySelect(index);
+                  categoryId = ref
+                      .read(categoryViewController)
+                      .toggleCategorySelect(index);
                 },
                 isSelected: isSelectedList,
               ),
@@ -111,12 +109,18 @@ class AddNewItemScreen extends HookConsumerWidget {
                 backgroundColor: Colors.lightBlueAccent,
               ),
               onPressed: () async {
-                if (unitQuantity == 0){
+                if (unitQuantity == 0) {
                   Fluttertoast.showToast(msg: "数量は数値を入力してください");
                 } else {
-                  Map<String, dynamic> bodyInput = await ref.read(itemViewController).makeBodyInput(name: name, categoryId: categoryId, unitQuantity: unitQuantity);
-                  String? checkedResult =
-                  ref.read(userItemViewController).alreadyIncludeCheck(bodyInput);
+                  Map<String, dynamic> bodyInput = await ref
+                      .read(itemViewController)
+                      .makeBodyInput(
+                          name: name,
+                          categoryId: categoryId,
+                          unitQuantity: unitQuantity);
+                  String? checkedResult = ref
+                      .read(userItemViewController)
+                      .alreadyIncludeCheck(bodyInput);
                   if (checkedResult != null) {
                     Fluttertoast.showToast(msg: "すでにあります");
                   } else {

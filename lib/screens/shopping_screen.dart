@@ -3,12 +3,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pantry_recipe_flutter/components/rounded_button.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
-import 'package:pantry_recipe_flutter/repository/user_repository.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/memo_item_view_controller.dart';
-import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 
 class ShoppingScreen extends HookConsumerWidget {
   int memoId;
@@ -34,19 +33,8 @@ class ShoppingScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('買い物メモ'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              ref.read(userRepository).signOutUser();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignInAndSingUpScreen(),
-                ),
-              );
-            },
-          )
+        actions: const [
+          IconButtonForSignOut(),
         ],
       ),
       body: Column(
@@ -55,8 +43,8 @@ class ShoppingScreen extends HookConsumerWidget {
             child: ListView.builder(
               primary: false,
               itemCount: memoItemList.length,
-              itemBuilder: (context, int index) =>
-                  ShoppingListTile(memoItem: memoItemList[index], memoId: memoId),
+              itemBuilder: (context, int index) => ShoppingListTile(
+                  memoItem: memoItemList[index], memoId: memoId),
             ),
           ),
           const SizedBox(
@@ -66,13 +54,15 @@ class ShoppingScreen extends HookConsumerWidget {
             buttonName: '買い物完了！',
             colour: Colors.lightBlueAccent,
             onTap: () async {
-              await ref.read(memoItemViewController).moveMemoItemToPantry(memoItemList);
+              await ref
+                  .read(memoItemViewController)
+                  .moveMemoItemToPantry(memoItemList);
               await ref.read(memoItemViewController).initState(memoId: memoId);
             },
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigator(),
+      bottomNavigationBar: const BottomNavigator(),
     );
   }
 }
@@ -89,13 +79,12 @@ class ShoppingListTile extends HookConsumerWidget {
     return Card(
       child: CheckboxListTile(
         value: memoItem.done,
-        onChanged: (bool? value) async{
+        onChanged: (bool? value) async {
           await ref.read(memoItemViewController).toggleDoneStatus(memoItem);
           await ref.read(memoItemViewController).initState(memoId: memoId);
         },
         title: Text(memoItem.name),
         subtitle: Text('数量:${memoItem.quantity.toString()}'),
-
       ),
     );
   }

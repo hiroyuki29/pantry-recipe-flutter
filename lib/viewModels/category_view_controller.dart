@@ -4,19 +4,20 @@ import 'package:pantry_recipe_flutter/repository/category_repository.dart';
 
 final categoryListState = StateProvider<List<Category>?>((ref) => null);
 
-final isSelectedState =
-StateProvider<List<bool>>((ref) => [true, false, false, false, false, false]);
-
+final isSelectedState = StateProvider<List<bool>>(
+    (ref) => [true, false, false, false, false, false]);
 
 final categoryViewController =
-Provider.autoDispose((ref) => CategoryViewController(ref.read));
+    Provider.autoDispose((ref) => CategoryViewController(ref.read));
 
 class CategoryViewController {
   final Reader _read;
+
   CategoryViewController(this._read);
 
   Future<void> initState() async {
-    _read(categoryListState.notifier).state = await _read(categoryRepository).getCategoryList();
+    _read(categoryListState.notifier).state =
+        await _read(categoryRepository).getCategoryList();
   }
 
   void dispose() {
@@ -35,6 +36,13 @@ class CategoryViewController {
   }
 
   void resetCategorySelect() {
-    _read(isSelectedState.notifier).state = [true, false, false, false, false, false];
+    _read(isSelectedState.notifier).state = [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ];
   }
 }
