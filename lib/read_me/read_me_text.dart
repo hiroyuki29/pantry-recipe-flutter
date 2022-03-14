@@ -97,7 +97,9 @@ ReadMe pr1 = ReadMe(
         'その他\n'
             '    ・Docker\n'
             '    ・Travis CI\n'
-            '    ・GitHub Actions\n');
+            '    ・GitHub Actions\n'
+            '    ・heroku\n'
+            '    ・firebase Hosting\n');
 
 ReadMe pr2 = ReadMe(
     id: 9,
