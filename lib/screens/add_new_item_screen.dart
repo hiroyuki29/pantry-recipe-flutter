@@ -59,7 +59,7 @@ class AddNewItemScreen extends HookConsumerWidget {
               onChanged: (value) {
                 name = value;
               },
-              decoration: kInputTextDecoration.copyWith(hintText: 'Name'),
+              decoration: kInputTextDecoration.copyWith(hintText: 'アイテム名'),
             ),
             const SizedBox(
               height: 10,
@@ -71,7 +71,7 @@ class AddNewItemScreen extends HookConsumerWidget {
                 unitQuantity = int.tryParse(value) ?? 0;
               },
               decoration:
-                  kInputTextDecoration.copyWith(hintText: 'unit_quantity'),
+                  kInputTextDecoration.copyWith(hintText: '基準となる個数'),
             ),
             const SizedBox(
               height: 10,

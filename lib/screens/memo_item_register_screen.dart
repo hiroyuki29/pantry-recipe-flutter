@@ -58,7 +58,7 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
                           primary: false,
                           itemCount: memoItemList.length,
                           itemBuilder: (context, int index) =>
-                              MemoRegisterTile(memoItem: memoItemList[index]),
+                              MemoRegisterTile(memoItem: memoItemList[index], memoId: memoId),
                         ),
                       ),
                     ],
@@ -75,7 +75,7 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
                         child: ListView.builder(
                           primary: false,
                           itemCount: itemList.length,
-                          itemBuilder: (context, int index) => ItemToPantryTile(
+                          itemBuilder: (context, int index) => ItemToMemoTile(
                             item: itemList[index],
                             memoId: memoId,
                           ),
@@ -94,11 +94,11 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
   }
 }
 
-class ItemToPantryTile extends HookConsumerWidget {
+class ItemToMemoTile extends HookConsumerWidget {
   final Item item;
   final int memoId;
 
-  const ItemToPantryTile({required this.item, required this.memoId});
+  const ItemToMemoTile({required this.item, required this.memoId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -132,8 +132,9 @@ class ItemToPantryTile extends HookConsumerWidget {
 
 class MemoRegisterTile extends HookConsumerWidget {
   final MemoItem memoItem;
+  final int memoId;
 
-  const MemoRegisterTile({required this.memoItem});
+  const MemoRegisterTile({required this.memoItem, required this.memoId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -142,6 +143,13 @@ class MemoRegisterTile extends HookConsumerWidget {
         tileColor: tileColorList[memoItem.categoryId],
         title: Text(memoItem.name),
         subtitle: Text('数量:${memoItem.quantity.toString()}'),
+        trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () async {
+            await ref.read(memoItemRepository).deleteMemoItem(memoItem);
+            ref.read(memoItemViewController).initState(memoId: memoId);
+          },
+        ),
       ),
     );
   }

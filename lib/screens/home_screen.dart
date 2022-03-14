@@ -109,7 +109,7 @@ class HomeScreen extends HookConsumerWidget {
             height: 30,
           ),
           RoundedButton(
-            buttonName: 'Item登録',
+            buttonName: 'アイテム登録',
             colour: Colors.lightBlueAccent,
             onTap: () {
               Navigator.push(
