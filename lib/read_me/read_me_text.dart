@@ -92,7 +92,12 @@ ReadMe pr1 = ReadMe(
         '  （主な使用パッケージ)\n'
         '    ・devise: 4.8.1\n'
         '    ・devise_token_auth: 1.2.0\n'
-        '    ・rack-cors: 1.1.1\n');
+        '    ・rack-cors: 1.1.1\n'
+        '\n'
+        'その他\n'
+            '    ・Docker\n'
+            '    ・Travis CI\n'
+            '    ・GitHub Actions\n');
 
 ReadMe pr2 = ReadMe(
     id: 9,
@@ -110,7 +115,7 @@ ReadMe pr3 = ReadMe(
     id: 10,
     leading: 'その他',
     main:
-    '・Githubアカウント：hiroyuki29\n'
+    '・GitHubアカウント：hiroyuki29\n'
         '    （リポジトリ名）\n'
         '        ・フロントエンド：pantry-recipe-flutter\n'
         '        ・バックエンド：pantry-recipe\n');
