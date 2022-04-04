@@ -128,9 +128,8 @@ class MemoRegisterTile extends HookConsumerWidget {
         subtitle: Text('数量:${memoItem.quantity.toString()}'),
         trailing: IconButton(
           icon: const Icon(Icons.delete),
-          onPressed: () async {
-            await ref.read(memoItemRepository).deleteMemoItem(memoItem);
-            ref.read(memoItemViewController).initState(memoId: memoId);
+          onPressed: () {
+            ref.read(memoItemViewController).deleteMemoItem(memoItem, memoId);
           },
         ),
       ),

@@ -106,4 +106,9 @@ class MemoItemViewController {
     }
     _read(memoItemViewController).initState(memoId: memoId);
   }
+
+  Future<void> deleteMemoItem(MemoItem item, int memoId) async {
+    await _read(memoItemRepository).deleteMemoItem(item);
+    _read(memoItemViewController).initState(memoId: memoId);
+  }
 }
