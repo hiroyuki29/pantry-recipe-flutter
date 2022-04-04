@@ -107,24 +107,7 @@ class ItemToMemoTile extends HookConsumerWidget {
         tileColor: tileColorList[item.categoryId],
         title: Text(item.name),
         subtitle: Text('数量:${item.unitQuantity}'),
-        onTap: () async {
-          String? memoItemId = ref
-              .read(memoItemViewController)
-              .alreadyIncludeCheck(item.toMap());
-          if (memoItemId != null) {
-            await ref
-                .read(memoItemRepository)
-                .incrementMemoItemQuantity(memoItemId, item.unitQuantity);
-          } else {
-            Map<String, dynamic> bodyInput = await ref
-                .read(memoItemViewController)
-                .makeBodyInput(item, memoId);
-            await ref
-                .read(memoItemRepository)
-                .saveMemoItem(jsonEncode(bodyInput));
-          }
-          ref.read(memoItemViewController).initState(memoId: memoId);
-        },
+        onTap: () {ref.read(memoItemViewController).moveItemToMemo(item, memoId);},
       ),
     );
   }
