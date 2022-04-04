@@ -31,7 +31,7 @@ class AddNewItemScreen extends HookConsumerWidget {
     return Container(
       color: const Color(0xff757575),
       child: Container(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(10.0),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
