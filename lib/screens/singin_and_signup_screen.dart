@@ -21,8 +21,11 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              const SizedBox(
+                height: 20,
+              ),
               Center(
                 child: Text(
                   '買い物メモとパントリーを一緒に管理しよう',
@@ -41,7 +44,7 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(
-                height: 48.0,
+                height: 20.0,
               ),
               TextField(
                 keyboardType: TextInputType.emailAddress,
