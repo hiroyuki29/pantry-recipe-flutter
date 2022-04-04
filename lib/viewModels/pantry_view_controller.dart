@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
@@ -67,5 +68,20 @@ class PantryViewController {
     bodyInputMap['quantity'] = quantity;
     await _read(pantryRepository).updatePantryItem(bodyInputMap);
     await _read(pantryViewController).initState();
+  }
+
+  Future<void> moveToPantry(Item item) async {
+    String? pantryItemId =
+    _read(pantryViewController).alreadyIncludeCheck(item.toMap());
+    if (pantryItemId != null) {
+      await _read(pantryRepository)
+          .incrementPantryItemQuantity(pantryItemId, item.unitQuantity);
+    } else {
+      Map<String, dynamic> bodyInput =
+      await _read(pantryViewController).makeBodyInput(item);
+      await _read(pantryRepository)
+          .savePantryItem(jsonEncode(bodyInput));
+    }
+    _read(pantryViewController).initState();
   }
 }

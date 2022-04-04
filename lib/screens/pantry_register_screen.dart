@@ -103,21 +103,8 @@ class ItemToPantryTile extends HookConsumerWidget {
         tileColor: tileColorList[item.categoryId],
         title: Text(item.name),
         trailing: Text('数量:${item.unitQuantity}'),
-        onTap: () async {
-          String? pantryItemId =
-              ref.read(pantryViewController).alreadyIncludeCheck(item.toMap());
-          if (pantryItemId != null) {
-            await ref
-                .read(pantryRepository)
-                .incrementPantryItemQuantity(pantryItemId, item.unitQuantity);
-          } else {
-            Map<String, dynamic> bodyInput =
-                await ref.read(pantryViewController).makeBodyInput(item);
-            await ref
-                .read(pantryRepository)
-                .savePantryItem(jsonEncode(bodyInput));
-          }
-          ref.read(pantryViewController).initState();
+        onTap: () {
+          ref.read(pantryViewController).moveToPantry(item);
         },
       ),
     );
