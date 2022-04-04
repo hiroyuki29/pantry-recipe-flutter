@@ -74,11 +74,12 @@ class MemoItemViewController {
     };
   }
 
-  Future<void> toggleDoneStatus(MemoItem memoItem) async {
+  Future<void> toggleDoneStatus(MemoItem memoItem, int memoId) async {
     memoItem.done = !memoItem.done;
     Map<String, dynamic> bodyInput =
         await _read(memoItemViewController).makeBodyInputForToggle(memoItem);
     await _read(memoItemRepository).updateMemoItem(bodyInput);
+    await _read(memoItemViewController).initState(memoId: memoId);
   }
 
   Future<void> moveMemoItemToPantry(List<MemoItem> memoItemList) async {
