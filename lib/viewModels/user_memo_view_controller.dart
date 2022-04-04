@@ -42,7 +42,8 @@ class UserMemoViewController {
       'uid': prefs.getString('uid'),
     };
   }
-  Future<bool> memoSearch(String memoName, String password) async {
+
+  Future<bool> memoRegister(String memoName, String password) async {
     Map<String, dynamic> bodyInput = await _read(userMemoViewController)
         .makeBodyInput(
         name: memoName, password: password);
@@ -55,4 +56,19 @@ class UserMemoViewController {
       return false;
     }
   }
+
+  Future<bool> memoSearch(String memoName, String password) async {
+    Map<String, dynamic> bodyInput = await _read(userMemoViewController)
+        .makeBodyInput(
+        name: memoName, password: password);
+    bool registerResult = await _read(userMemoRepository)
+        .searchMemo(bodyInput);
+    if (registerResult) {
+      _read(userMemoViewController).initState();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
