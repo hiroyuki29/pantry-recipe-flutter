@@ -81,20 +81,12 @@ class MemoIndexScreen extends HookConsumerWidget {
                         if (memoName == '' || password == '') {
                           Fluttertoast.showToast(msg: "空欄があります");
                         } else {
-                          Map<String, dynamic> bodyInput = await ref
-                              .read(userMemoViewController)
-                              .makeBodyInput(
-                                  name: memoName, password: password);
-                          bool registerResult = await ref
-                              .read(userMemoRepository)
-                              .saveUserMemo(bodyInput);
-                          if (registerResult) {
+                          bool checkResult = await ref.read(userMemoViewController).memoSearch(memoName, password);
+                          if (checkResult) {
                             Fluttertoast.showToast(msg: "登録成功");
-                            ref.read(userMemoViewController).initState();
                           } else {
                             Fluttertoast.showToast(msg: "登録に失敗しました");
                           }
-                          ref.read(userMemoViewController).initState();
                         }
                       },
                       child: const Text('登録'),
