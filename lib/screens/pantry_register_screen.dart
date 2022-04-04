@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,7 +8,6 @@ import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
-import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 
 class PantryRegisterScreen extends HookConsumerWidget {
   const PantryRegisterScreen({Key? key}) : super(key: key);
@@ -103,21 +101,8 @@ class ItemToPantryTile extends HookConsumerWidget {
         tileColor: tileColorList[item.categoryId],
         title: Text(item.name),
         trailing: Text('数量:${item.unitQuantity}'),
-        onTap: () async {
-          String? pantryItemId =
-              ref.read(pantryViewController).alreadyIncludeCheck(item.toMap());
-          if (pantryItemId != null) {
-            await ref
-                .read(pantryRepository)
-                .incrementPantryItemQuantity(pantryItemId, item.unitQuantity);
-          } else {
-            Map<String, dynamic> bodyInput =
-                await ref.read(pantryViewController).makeBodyInput(item);
-            await ref
-                .read(pantryRepository)
-                .savePantryItem(jsonEncode(bodyInput));
-          }
-          ref.read(pantryViewController).initState();
+        onTap: () {
+          ref.read(pantryViewController).moveToPantry(item);
         },
       ),
     );

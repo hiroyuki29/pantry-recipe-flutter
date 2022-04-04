@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,9 +6,6 @@ import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/entity/master_food.dart';
-import 'package:pantry_recipe_flutter/repository/item_repository.dart';
-import 'package:pantry_recipe_flutter/repository/master_food_repository.dart';
-import 'package:pantry_recipe_flutter/repository/user_item_repository.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/master_food_view_controller.dart';
@@ -122,9 +118,8 @@ class ItemTile extends HookConsumerWidget {
         subtitle: Text('[単位] ${item.unitQuantity.toString()}'),
         trailing: IconButton(
           icon: const Icon(Icons.delete),
-          onPressed: () async {
-            await ref.read(itemRepository).deleteItem(item);
-            ref.read(userItemViewController).initState();
+          onPressed: () {
+            ref.read(userItemViewController).deleteItem(item);
           },
         ),
       ),
@@ -145,21 +140,11 @@ class MasterFoodTile extends HookConsumerWidget {
         title: Text(masterFood.name),
         subtitle: Text('[単位] ${masterFood.unitQuantity.toString()}'),
         onTap: () async {
-          Map<String, dynamic> newItemMap =
-              await ref.read(masterFoodRepository).toItemMap(masterFood);
-          Map<String, dynamic> newUserItemMap =
-              await ref.read(masterFoodRepository).toUserItemMap(masterFood);
-          String? checkedResult =
-              ref.read(userItemViewController).alreadyIncludeCheck(newItemMap);
-          if (checkedResult != null) {
+          bool alreadyExist =
+              await ref.read(masterFoodViewController).moveToItem(masterFood);
+          if (alreadyExist) {
             Fluttertoast.showToast(msg: "すでにあります");
-          } else {
-            int registerItemId =
-                await ref.read(itemRepository).saveItem(jsonEncode(newItemMap));
-            newUserItemMap['item_id'] = registerItemId;
-            await ref.read(userItemRepository).saveUserItem(newUserItemMap);
           }
-          ref.read(userItemViewController).initState();
         },
       ),
     );

@@ -4,6 +4,7 @@ import 'package:pantry_recipe_flutter/repository/memo_item_repository.dart';
 import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
+import 'dart:convert';
 
 final memoItemListState = StateProvider<List<MemoItem>?>((ref) => null);
 
@@ -73,11 +74,12 @@ class MemoItemViewController {
     };
   }
 
-  Future<void> toggleDoneStatus(MemoItem memoItem) async {
+  Future<void> toggleDoneStatus(MemoItem memoItem, int memoId) async {
     memoItem.done = !memoItem.done;
     Map<String, dynamic> bodyInput =
         await _read(memoItemViewController).makeBodyInputForToggle(memoItem);
     await _read(memoItemRepository).updateMemoItem(bodyInput);
+    await _read(memoItemViewController).initState(memoId: memoId);
   }
 
   Future<void> moveMemoItemToPantry(List<MemoItem> memoItemList) async {
@@ -89,5 +91,25 @@ class MemoItemViewController {
         await _read(memoItemRepository).deleteMemoItem(memoItem);
       }
     }
+  }
+
+  Future<void> moveItemToMemo(Item item, int memoId) async {
+    String? memoItemId = _read(memoItemViewController)
+        .alreadyIncludeCheck(item.toMap());
+    if (memoItemId != null) {
+      await _read(memoItemRepository)
+          .incrementMemoItemQuantity(memoItemId, item.unitQuantity);
+    } else {
+      Map<String, dynamic> bodyInput = await _read(memoItemViewController)
+          .makeBodyInput(item, memoId);
+      await _read(memoItemRepository)
+          .saveMemoItem(jsonEncode(bodyInput));
+    }
+    _read(memoItemViewController).initState(memoId: memoId);
+  }
+
+  Future<void> deleteMemoItem(MemoItem item, int memoId) async {
+    await _read(memoItemRepository).deleteMemoItem(item);
+    _read(memoItemViewController).initState(memoId: memoId);
   }
 }

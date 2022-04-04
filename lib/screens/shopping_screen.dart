@@ -82,8 +82,7 @@ class ShoppingListTile extends HookConsumerWidget {
         tileColor: tileColorList[memoItem.categoryId],
         value: memoItem.done,
         onChanged: (bool? value) async {
-          await ref.read(memoItemViewController).toggleDoneStatus(memoItem);
-          await ref.read(memoItemViewController).initState(memoId: memoId);
+          await ref.read(memoItemViewController).toggleDoneStatus(memoItem, memoId);
         },
         title: Text(memoItem.name),
         subtitle: Text('数量:${memoItem.quantity.toString()}'),
