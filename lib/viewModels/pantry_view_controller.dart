@@ -60,4 +60,12 @@ class PantryViewController {
       'uid': prefs.getString('uid'),
     };
   }
+
+  Future<void> quantityEdit(PantryItem pantryItem, int quantity) async {
+    Map<String, dynamic> bodyInputMap =
+        await _read(pantryViewController).makeBodyInputForEdit(pantryItem);
+    bodyInputMap['quantity'] = quantity;
+    await _read(pantryRepository).updatePantryItem(bodyInputMap);
+    await _read(pantryViewController).initState();
+  }
 }

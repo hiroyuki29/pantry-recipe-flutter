@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 import 'package:pantry_recipe_flutter/viewModels/category_view_controller.dart';
 import 'package:pantry_recipe_flutter/entity/category.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
@@ -25,7 +24,6 @@ class PantryEditScreen extends HookConsumerWidget {
       return Container(child: const Center(child: CircularProgressIndicator()));
     }
 
-    final isSelectedList = ref.watch(isSelectedState);
     int quantity = pantryItem.quantity;
 
     return Container(
@@ -84,16 +82,9 @@ class PantryEditScreen extends HookConsumerWidget {
                 if (quantity == 0) {
                   Fluttertoast.showToast(msg: "数量は数値を入力してください");
                 } else {
-                  Map<String, dynamic> bodyInputMap = await ref
-                      .read(pantryViewController)
-                      .makeBodyInputForEdit(pantryItem);
-                  bodyInputMap['quantity'] = quantity;
-                  await ref
-                      .read(pantryRepository)
-                      .updatePantryItem(bodyInputMap);
+                  ref.read(pantryViewController).quantityEdit(pantryItem, quantity);
+                  Navigator.pop(context);
                 }
-                await ref.read(pantryViewController).initState();
-                Navigator.pop(context);
               },
             ),
           ],
