@@ -22,7 +22,6 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const SizedBox(
                 height: 20,
@@ -40,12 +39,12 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 child: Text(
                   'Pantry Recipe',
                   style: TextStyle(
-                    fontSize: 70,
+                    fontSize: 60,
                   ),
                 ),
               ),
               const SizedBox(
-                height: 20.0,
+                height: 16.0,
               ),
               TextField(
                 keyboardType: TextInputType.emailAddress,
@@ -66,12 +65,16 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 },
                 decoration: kInputTextDecoration,
               ),
-              const Text('お試しの場合は\n'
-                  'メールアドレス：test@example.com\n'
-                  'パスワード：passwordtest\n'
-                  'をご利用ください'),
+              const Text(
+                'お試しの場合は下記をご利用ください\n'
+                'メールアドレス：test@example.com\n'
+                'パスワード：passwordtest',
+                style: TextStyle(
+                  fontSize: 10,
+                ),
+              ),
               const SizedBox(
-                height: 24.0,
+                height: 4.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +130,12 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                       MaterialPageRoute(
                           builder: (context) => ForgotPasswordScreen()));
                 },
-                child: const Text('パスワードを忘れたら・・・'),
+                child: const Text(
+                  'パスワードを忘れたら・・・',
+                  style: TextStyle(
+                    fontSize: 10,
+                  ),
+                ),
               ),
               RoundedButton(
                 buttonName: 'アプリ説明',
