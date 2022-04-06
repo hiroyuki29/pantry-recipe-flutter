@@ -31,21 +31,6 @@ class HomeScreen extends HookConsumerWidget {
                 const SizedBox(
                   width: 30,
                 ),
-                // Expanded(
-                //   child: ElevatedButton(
-                //     onPressed: () async {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //             builder: (context) => const HomeScreen()),
-                //       );
-                //     },
-                //     child: const Text('Recipe'),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   width: 30,
-                // ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

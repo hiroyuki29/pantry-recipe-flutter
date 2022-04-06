@@ -7,6 +7,7 @@ import 'package:pantry_recipe_flutter/components/rounded_button.dart';
 import 'package:pantry_recipe_flutter/repository/user_repository.dart';
 import 'package:pantry_recipe_flutter/screens/home_screen.dart';
 import 'package:pantry_recipe_flutter/screens/read_me_screen.dart';
+import 'package:pantry_recipe_flutter/screens/reset_password_screen.dart';
 
 class SignInAndSingUpScreen extends HookConsumerWidget {
   String? email;
@@ -52,8 +53,7 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 onChanged: (value) {
                   email = value;
                 },
-                decoration:
-                    kInputTextDecoration.copyWith(hintText: 'メールアドレス'),
+                decoration: kInputTextDecoration.copyWith(hintText: 'メールアドレス'),
               ),
               const SizedBox(
                 height: 8.0,
@@ -111,7 +111,32 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                       }
                     },
                   ),
+                  // RoundedButton(
+                  //   buttonName: 'パスワードを忘れた方',
+                  //   colour: Colors.lightBlueAccent,
+                  //   onTap: () async {
+                  //     var inputs = {
+                  //       'email': email,
+                  //       'redirect_url': '${Uri.base.toString()}password_reset'
+                  //     };
+                  //     await ref
+                  //         .read(userRepository)
+                  //         .passwordForgot(jsonEncode(inputs));
+                  //   },
+                  // ),
                 ],
+              ),
+              TextButton(
+                // style: TextButton.styleFrom(
+                //   textStyle: const TextStyle(fontSize: 20),
+                // ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen()));
+                },
+                child: const Text('パスワードを忘れたら・・・'),
               ),
               RoundedButton(
                 buttonName: 'アプリ説明',
