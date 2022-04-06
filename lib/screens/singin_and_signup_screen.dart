@@ -66,6 +66,10 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 },
                 decoration: kInputTextDecoration,
               ),
+              const Text('お試しの場合は\n'
+                  'メールアドレス：test@example.com\n'
+                  'パスワード：passwordtest\n'
+                  'をご利用ください'),
               const SizedBox(
                 height: 24.0,
               ),
@@ -111,19 +115,6 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                       }
                     },
                   ),
-                  // RoundedButton(
-                  //   buttonName: 'パスワードを忘れた方',
-                  //   colour: Colors.lightBlueAccent,
-                  //   onTap: () async {
-                  //     var inputs = {
-                  //       'email': email,
-                  //       'redirect_url': '${Uri.base.toString()}password_reset'
-                  //     };
-                  //     await ref
-                  //         .read(userRepository)
-                  //         .passwordForgot(jsonEncode(inputs));
-                  //   },
-                  // ),
                 ],
               ),
               TextButton(
