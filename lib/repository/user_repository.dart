@@ -12,6 +12,10 @@ abstract class UserRepository {
   Future<dynamic> signUpUser(String bodyInput);
 
   Future<dynamic> signOutUser();
+
+  Future<void> passwordForgot(String bodyInput);
+
+  Future<void> passwordReset(String bodyInput);
 }
 
 const _userKey = 'userKey';
@@ -74,5 +78,23 @@ class UserRepositoryImpl implements UserRepository {
     await prefs.remove('uid');
     await prefs.remove('client');
     await prefs.remove('user_id');
+  }
+
+  @override
+  Future<void> passwordForgot(String bodyInput) async {
+    NetworkHelper networkHelper = NetworkHelper();
+    await networkHelper.postData(
+        urlInput: 'auth/password',
+        headerInput: _userHeader,
+        bodyInput: bodyInput);
+  }
+
+  @override
+  Future<void> passwordReset(String bodyInput) async {
+    NetworkHelper networkHelper = NetworkHelper();
+    await networkHelper.putData(
+        urlInput: 'auth/password',
+        headerInput: _userHeader,
+        bodyInput: bodyInput);
   }
 }

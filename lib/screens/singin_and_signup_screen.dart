@@ -7,6 +7,7 @@ import 'package:pantry_recipe_flutter/components/rounded_button.dart';
 import 'package:pantry_recipe_flutter/repository/user_repository.dart';
 import 'package:pantry_recipe_flutter/screens/home_screen.dart';
 import 'package:pantry_recipe_flutter/screens/read_me_screen.dart';
+import 'package:pantry_recipe_flutter/screens/reset_password_screen.dart';
 
 class SignInAndSingUpScreen extends HookConsumerWidget {
   String? email;
@@ -52,8 +53,7 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 onChanged: (value) {
                   email = value;
                 },
-                decoration:
-                    kInputTextDecoration.copyWith(hintText: 'メールアドレス'),
+                decoration: kInputTextDecoration.copyWith(hintText: 'メールアドレス'),
               ),
               const SizedBox(
                 height: 8.0,
@@ -66,6 +66,10 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 },
                 decoration: kInputTextDecoration,
               ),
+              const Text('お試しの場合は\n'
+                  'メールアドレス：test@example.com\n'
+                  'パスワード：passwordtest\n'
+                  'をご利用ください'),
               const SizedBox(
                 height: 24.0,
               ),
@@ -112,6 +116,18 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                     },
                   ),
                 ],
+              ),
+              TextButton(
+                // style: TextButton.styleFrom(
+                //   textStyle: const TextStyle(fontSize: 20),
+                // ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen()));
+                },
+                child: const Text('パスワードを忘れたら・・・'),
               ),
               RoundedButton(
                 buttonName: 'アプリ説明',
