@@ -1,7 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pantry_recipe_flutter/repository/user_item_repository.dart';
-import 'package:pantry_recipe_flutter/repository/item_repository.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 
 final userItemListState = StateProvider<List<Item>?>((ref) => null);
@@ -47,7 +46,7 @@ class UserItemViewController {
   }
 
   Future<void> deleteItem(Item item) async {
-    await _read(itemRepository).deleteItem(item);
+    await _read(userItemRepository).deleteUserItem(item);
     _read(userItemViewController).initState();
   }
 }

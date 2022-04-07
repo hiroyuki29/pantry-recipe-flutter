@@ -39,7 +39,7 @@ class MemoItemViewController {
     final prefs = await SharedPreferences.getInstance();
     return {
       'memo_id': memoId,
-      'item_id': item.id,
+      'item_id': item.itemId,
       'quantity': item.unitQuantity,
       'access-token': prefs.getString('access-token'),
       'client': prefs.getString('client'),

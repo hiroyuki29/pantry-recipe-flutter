@@ -39,7 +39,7 @@ class PantryViewController {
     int? userId = prefs.getInt('user_id');
     return {
       'user_id': userId,
-      'item_id': item.id,
+      'item_id': item.itemId,
       'quantity': item.unitQuantity,
       'access-token': prefs.getString('access-token'),
       'client': prefs.getString('client'),
