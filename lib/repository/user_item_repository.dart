@@ -42,13 +42,7 @@ class UserItemRepositoryImpl implements UserItemRepository {
 
   @override
   Future<void> saveUserItem(Map<String, dynamic> bodyInputMap) async {
-
     NetworkHelper networkHelper = NetworkHelper();
-    Map<String, dynamic> response = await networkHelper.postData(
-        urlInput: 'items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
-    dynamic responseBody = response['body'];
-    dynamic responseData = jsonDecode(responseBody)['data'];
-    bodyInputMap['item_id'] = responseData['id'];
     await networkHelper.postData(
         urlInput: 'user_items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
   }
@@ -65,6 +59,6 @@ class UserItemRepositoryImpl implements UserItemRepository {
     Map<String, dynamic> itemMap = item.toMap();
     String id = itemMap['id'].toString();
     await networkHelper.deleteData(
-        urlInput: 'items/$id', headerInput: _userHeader, bodyInput: jsonEncode(_userInfo));
+        urlInput: 'user_items/$id', headerInput: _userHeader, bodyInput: jsonEncode(_userInfo));
   }
 }

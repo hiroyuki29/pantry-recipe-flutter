@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pantry_recipe_flutter/repository/item_repository.dart';
 import 'package:pantry_recipe_flutter/repository/user_item_repository.dart';
 import 'package:pantry_recipe_flutter/viewModels/category_view_controller.dart';
 import 'package:pantry_recipe_flutter/entity/category.dart';
@@ -124,6 +125,8 @@ class AddNewItemScreen extends HookConsumerWidget {
                   if (checkedResult != null) {
                     Fluttertoast.showToast(msg: "すでにあります");
                   } else {
+                    int itemId = await ref.read(itemRepository).saveItem(bodyInput);
+                    bodyInput['item_id'] = itemId;
                     await ref.read(userItemRepository).saveUserItem(bodyInput);
                   }
                   ref.read(categoryViewController).resetCategorySelect();

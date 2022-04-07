@@ -56,6 +56,7 @@ class MasterFoodRepositoryImpl implements MasterFoodRepository {
   Future<Map<String, dynamic>> toUserItemMap(MasterFood masterFood) async {
     final prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> masterFoodMap = masterFood.toMap();
+    masterFoodMap['item_id'] = masterFood.id;
     masterFoodMap['user_id'] = prefs.getInt('user_id');
     masterFoodMap['access-token'] = prefs.getString('access-token');
     masterFoodMap['client'] = prefs.getString('client');

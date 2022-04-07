@@ -10,7 +10,7 @@ final itemRepository =
 abstract class ItemRepository {
   Future<List<Item>> getItemList();
 
-  Future<int> saveItem(String bodyInput);
+  Future<int> saveItem(Map<String, dynamic> bodyInputMap);
 
   Future<void> deleteItem(Item item);
 
@@ -45,10 +45,10 @@ class ItemRepositoryImpl implements ItemRepository {
   }
 
   @override
-  Future<int> saveItem(String bodyInput) async {
+  Future<int> saveItem(Map<String, dynamic> bodyInputMap) async {
     NetworkHelper networkHelper = NetworkHelper();
     Map<String, dynamic> response = await networkHelper.postData(
-        urlInput: 'items', headerInput: _userHeader, bodyInput: bodyInput);
+        urlInput: 'items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
     dynamic responseBody = response['body'];
     dynamic responseData = jsonDecode(responseBody)['data'];
     return responseData['id'];
