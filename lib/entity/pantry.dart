@@ -204,7 +204,7 @@ class PantryItemList extends StateNotifier<List<PantryItem>> {
         if (item.id == id)
           item.copyWith(
             quantity: item.quantity + addQuantity,
-            newCreate: true,
+            edited: true,
           )
         else
           item,
