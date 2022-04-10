@@ -205,14 +205,16 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
     final pantryItemList = _read(pantryItemListProvider);
     for (PantryItem pantryItem in pantryItemList){
       Map<String, dynamic> bodyInputMap = await _read(networkingRepository).makeBodyPantryItem(pantryItem);
-      if(pantryItem.removed == false && pantryItem.edited){
-        await networkHelper.putData(
-            urlInput: 'pantries/${pantryItem.id}',
-            headerInput: _userHeader,
-            bodyInput: jsonEncode(bodyInputMap));
-      } else if(pantryItem.removed == false && pantryItem.newCreate){
-        await networkHelper.postData(
-            urlInput: 'pantries', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
+      if(pantryItem.removed == false){
+        if (pantryItem.newCreate){
+          await networkHelper.postData(
+              urlInput: 'pantries', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
+        } else if(pantryItem.edited) {
+          await networkHelper.putData(
+              urlInput: 'pantries/${pantryItem.id}',
+              headerInput: _userHeader,
+              bodyInput: jsonEncode(bodyInputMap));
+        }
       } else if (pantryItem.removed && pantryItem.newCreate == false){
         await networkHelper.deleteData(
             urlInput: 'pantries/${pantryItem.id}',
@@ -220,6 +222,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
             bodyInput: jsonEncode(_userInfo));
       }
     }
+    await _read(networkingRepository).download();
   }
 
   @override
