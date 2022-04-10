@@ -5,10 +5,11 @@ import 'package:pantry_recipe_flutter/constants.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
-import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
 import 'package:pantry_recipe_flutter/screens/pantry_register_screen.dart';
 import 'package:pantry_recipe_flutter/screens/pantry_edit_screen.dart';
+import '../components/icon_button_for_download.dart';
+import '../components/icon_button_for_upload.dart';
 
 class PantryShowScreen extends HookConsumerWidget {
   const PantryShowScreen({Key? key}) : super(key: key);
@@ -19,15 +20,14 @@ class PantryShowScreen extends HookConsumerWidget {
       ref.read(pantryViewController).initState();
       return ref.read(pantryViewController).dispose;
     }, []);
-    final List<PantryItem>? pantryItemList = ref.watch(pantryItemListState);
-    if (pantryItemList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
+    final pantryItemList = ref.watch(filteredPantryItems);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('パントリー'),
         actions: const [
+          IconButtonForUpload(),
+          IconButtonForDownload(),
           IconButtonForSignOut(),
         ],
       ),
@@ -93,7 +93,7 @@ class PantryItemTile extends HookConsumerWidget {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
-                await ref.read(pantryRepository).deletePantryItem(pantryItem);
+                await ref.read(pantryViewController).deletePantryItem(pantryItem.id);
                 ref.read(pantryViewController).initState();
               },
             ),

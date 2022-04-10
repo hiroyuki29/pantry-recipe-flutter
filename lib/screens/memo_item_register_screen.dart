@@ -8,9 +8,11 @@ import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/memo_item_view_controller.dart';
+import '../components/icon_button_for_download.dart';
+import '../components/icon_button_for_upload.dart';
 
 class MemoItemRegisterScreen extends HookConsumerWidget {
-  int memoId;
+  String memoId;
 
   MemoItemRegisterScreen({required this.memoId});
 
@@ -21,19 +23,15 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
       ref.read(memoItemViewController).initState(memoId: memoId);
       return ref.read(memoItemViewController).dispose;
     }, []);
-    final List<Item>? itemList = ref.watch(userItemListState);
-    final List<MemoItem>? memoItemList = ref.watch(memoItemListState);
-    if (itemList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
-    if (memoItemList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
+    final itemList = ref.watch(filteredUsersItems);
+    final memoItemList = ref.watch(filteredMemoItems);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('買い物メモ登録'),
         actions: const [
+          IconButtonForUpload(),
+          IconButtonForDownload(),
           IconButtonForSignOut(),
         ],
       ),
@@ -94,7 +92,7 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
 
 class ItemToMemoTile extends HookConsumerWidget {
   final Item item;
-  final int memoId;
+  final String memoId;
 
   const ItemToMemoTile({required this.item, required this.memoId});
 
@@ -113,7 +111,7 @@ class ItemToMemoTile extends HookConsumerWidget {
 
 class MemoRegisterTile extends HookConsumerWidget {
   final MemoItem memoItem;
-  final int memoId;
+  final String memoId;
 
   const MemoRegisterTile({required this.memoItem, required this.memoId});
 

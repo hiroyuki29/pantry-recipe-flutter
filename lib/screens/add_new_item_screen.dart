@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pantry_recipe_flutter/repository/item_repository.dart';
-import 'package:pantry_recipe_flutter/repository/user_item_repository.dart';
 import 'package:pantry_recipe_flutter/viewModels/category_view_controller.dart';
 import 'package:pantry_recipe_flutter/entity/category.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/item_view_controller.dart';
 import 'package:pantry_recipe_flutter/constants.dart';
+
+import '../entity/item.dart';
+import '../entity/master_food.dart';
 
 class AddNewItemScreen extends HookConsumerWidget {
   int categoryId = 1;
@@ -22,9 +23,9 @@ class AddNewItemScreen extends HookConsumerWidget {
       ref.read(categoryViewController).initState();
       return ref.read(categoryViewController).dispose;
     }, []);
-    final List<Category>? categoryList = ref.watch(categoryListState);
+    final List<Category>? categoryList = ref.watch(sortedCategories);
     if (categoryList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
+      return const Center(child: CircularProgressIndicator());
     }
 
     final isSelectedList = ref.watch(isSelectedState);
@@ -71,8 +72,7 @@ class AddNewItemScreen extends HookConsumerWidget {
               onChanged: (value) {
                 unitQuantity = int.tryParse(value) ?? 0;
               },
-              decoration:
-                  kInputTextDecoration.copyWith(hintText: '基準となる個数'),
+              decoration: kInputTextDecoration.copyWith(hintText: '基準となる個数'),
             ),
             const SizedBox(
               height: 10,
@@ -90,8 +90,9 @@ class AddNewItemScreen extends HookConsumerWidget {
                 ],
                 onPressed: (int index) {
                   categoryId = ref
-                      .read(categoryViewController)
-                      .toggleCategorySelect(index) + 1;
+                          .read(categoryViewController)
+                          .toggleCategorySelect(index) +
+                      1;
                 },
                 isSelected: isSelectedList,
               ),
@@ -119,18 +120,23 @@ class AddNewItemScreen extends HookConsumerWidget {
                           name: name,
                           categoryId: categoryId,
                           unitQuantity: unitQuantity);
-                  String? checkedResult = ref
+                  bodyInput['id'] = 0;
+                  MasterFood masterFood = MasterFood.fromMap(bodyInput);
+                  String? checkedResult = await ref
                       .read(userItemViewController)
-                      .alreadyIncludeCheck(bodyInput);
+                      .alreadyIncludeCheck(masterFood);
                   if (checkedResult != null) {
-                    Fluttertoast.showToast(msg: "すでにあります");
+                    if (checkedResult != '0'){
+                      Fluttertoast.showToast(msg: "すでにあります");
+                    }
                   } else {
-                    int itemId = await ref.read(itemRepository).saveItem(bodyInput);
-                    bodyInput['item_id'] = itemId;
-                    await ref.read(userItemRepository).saveUserItem(bodyInput);
+                    bodyInput['item_id'] = 0;
+                    bodyInput['removed'] = false;
+                    bodyInput['newCreate'] = true;
+                    Item addItem = Item.fromMap(bodyInput);
+                    await ref.read(userItemViewController).add(addItem);
                   }
                   ref.read(categoryViewController).resetCategorySelect();
-                  await ref.read(userItemViewController).initState();
                   Navigator.pop(context);
                 }
               },

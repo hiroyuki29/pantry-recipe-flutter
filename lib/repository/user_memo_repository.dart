@@ -3,19 +3,20 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pantry_recipe_flutter/api/networking.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pantry_recipe_flutter/entity/memo.dart';
+import '../viewModels/user_memo_view_controller.dart';
 
 final userMemoRepository = Provider.autoDispose<UserMemoRepository>(
     (ref) => UserMemoRepositoryImpl(ref.read));
 
 abstract class UserMemoRepository {
   Future<List<Memo>> getUserMemoList();
-
-  Future<bool> saveUserMemo(Map<String, dynamic> bodyInputMap);
-
-  Future<bool> searchMemo(Map<String, dynamic> bodyInputMap);
-
+  Future<void> saveMemo();
+  Future<String> registerUserMemo(Map<String, dynamic> bodyInputMap);
+  Future<String> searchMemo(Map<String, dynamic> bodyInputMap);
   Future<void> deleteUserMemo(Memo memo);
 }
+
+const _memoListKey = 'memoListKey';
 
 class UserMemoRepositoryImpl implements UserMemoRepository {
   final Reader _read;
@@ -29,29 +30,27 @@ class UserMemoRepositoryImpl implements UserMemoRepository {
 
   @override
   Future<List<Memo>> getUserMemoList() async {
-    final prefs = await SharedPreferences.getInstance();
-    Map<String, String> _userInfo = {
-      'access-token': prefs.getString('access-token') ?? ''
-    };
-    _userInfo['uid'] = prefs.getString('uid') ?? '';
-    _userInfo['client'] = prefs.getString('client') ?? '';
-    NetworkHelper networkHelper = NetworkHelper();
-    var responseData = await networkHelper.getData(
-        urlInput: 'memo_users', headerInput: _userInfo);
-    Map<String, dynamic> responseBody = jsonDecode(responseData['body']);
-    final List<Map<String, dynamic>> memoListJsonList =
-        List<Map<String, dynamic>>.from(responseBody['data']);
-    return memoListJsonList.map((json) => Memo.fromMap(json)).toList();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var result = prefs.getStringList(_memoListKey) ?? [];
+    List<Memo> memoList = result.map((f) => Memo.fromMap(json.decode(f))).toList();
+    return memoList;
   }
 
   @override
-  Future<bool> saveUserMemo(Map<String, dynamic> bodyInputMap) async {
+  Future<void> saveMemo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final itemList = _read(userMemoListProvider);
+    List<String> itemListForPref = itemList.map((memo) => json.encode(memo.toMap())).toList();
+    await prefs.setStringList(_memoListKey, itemListForPref);
+  }
+
+  @override
+  Future<String> registerUserMemo(Map<String, dynamic> bodyInputMap) async {
     NetworkHelper networkHelper = NetworkHelper();
     Map<String, dynamic> response = await networkHelper.postData(
         urlInput: 'memos',
         headerInput: _userHeader,
         bodyInput: jsonEncode(bodyInputMap));
-
     Map<String, dynamic> responseBody = jsonDecode(response['body']);
     if (responseBody['status'] == 'SUCCESS') {
       dynamic responseBody = response['body'];
@@ -61,14 +60,14 @@ class UserMemoRepositoryImpl implements UserMemoRepository {
           urlInput: 'memo_users',
           headerInput: _userHeader,
           bodyInput: jsonEncode(bodyInputMap));
-      return true;
+      return bodyInputMap['memo_id'].toString();
     } else {
-      return false;
+      return '';
     }
   }
 
   @override
-  Future<bool> searchMemo(Map<String, dynamic> bodyInputMap) async {
+  Future<String> searchMemo(Map<String, dynamic> bodyInputMap) async {
     NetworkHelper networkHelper = NetworkHelper();
     Map<String, dynamic> response = await networkHelper.postData(
         urlInput: 'memos/search',
@@ -83,9 +82,9 @@ class UserMemoRepositoryImpl implements UserMemoRepository {
           urlInput: 'memo_users',
           headerInput: _userHeader,
           bodyInput: jsonEncode(bodyInputMap));
-      return true;
+      return bodyInputMap['memo_id'].toString();
     } else {
-      return false;
+      return '';
     }
   }
 
@@ -98,11 +97,12 @@ class UserMemoRepositoryImpl implements UserMemoRepository {
     };
     _userInfo['uid'] = prefs.getString('uid') ?? '';
     _userInfo['client'] = prefs.getString('client') ?? '';
-    Map<String, dynamic> memoMap = memo.toMap();
-    String id = memoMap['id'].toString();
+    String id = memo.id.toString();
     await networkHelper.deleteData(
         urlInput: 'memos/$id',
         headerInput: _userHeader,
         bodyInput: jsonEncode(_userInfo));
+    _read(userMemoListProvider.notifier).remove(id);
+    _read(userMemoRepository).saveMemo();
   }
 }

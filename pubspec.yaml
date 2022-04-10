@@ -23,6 +23,7 @@ dependencies:
   shared_preferences: ^2.0.13
   fluttertoast: ^8.0.9
   url_strategy: ^0.2.0
+  uuid: ^3.0.6
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,7 @@ import 'package:pantry_recipe_flutter/repository/user_repository.dart';
 import 'package:pantry_recipe_flutter/screens/home_screen.dart';
 import 'package:pantry_recipe_flutter/screens/read_me_screen.dart';
 import 'package:pantry_recipe_flutter/screens/reset_password_screen.dart';
+import '../viewModels/loading_view_controller.dart';
 
 class SignInAndSingUpScreen extends HookConsumerWidget {
   String? email;
@@ -85,9 +86,8 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                     onTap: () async {
                       var inputs = {'email': email, 'password': password};
                       try {
-                        await ref
-                            .read(userRepository)
-                            .signInUser(jsonEncode(inputs));
+                        await ref.read(loadingServiceProvider.notifier).wrap(ref.read(userRepository)
+                            .signInUser(jsonEncode(inputs)));
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -106,9 +106,8 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                     onTap: () async {
                       var inputs = {'email': email, 'password': password};
                       try {
-                        await ref
-                            .read(userRepository)
-                            .signUpUser(jsonEncode(inputs));
+                        await ref.read(loadingServiceProvider.notifier).wrap(ref.read(userRepository)
+                            .signUpUser(jsonEncode(inputs)));
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -121,9 +120,6 @@ class SignInAndSingUpScreen extends HookConsumerWidget {
                 ],
               ),
               TextButton(
-                // style: TextButton.styleFrom(
-                //   textStyle: const TextStyle(fontSize: 20),
-                // ),
                 onPressed: () {
                   Navigator.push(
                       context,

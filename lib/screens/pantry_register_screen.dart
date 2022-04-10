@@ -8,6 +8,8 @@ import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
+import '../components/icon_button_for_download.dart';
+import '../components/icon_button_for_upload.dart';
 
 class PantryRegisterScreen extends HookConsumerWidget {
   const PantryRegisterScreen({Key? key}) : super(key: key);
@@ -19,19 +21,15 @@ class PantryRegisterScreen extends HookConsumerWidget {
       ref.read(pantryViewController).initState();
       return ref.read(userItemViewController).dispose;
     }, []);
-    final List<Item>? itemList = ref.watch(userItemListState);
-    final List<PantryItem>? pantryItemList = ref.watch(pantryItemListState);
-    if (itemList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
-    if (pantryItemList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
+    final itemList = ref.watch(filteredUsersItems);
+    final pantryItemList = ref.watch(filteredPantryItems);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('パントリー登録'),
         actions: const [
+          IconButtonForUpload(),
+          IconButtonForDownload(),
           IconButtonForSignOut(),
         ],
       ),
