@@ -3,7 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pantry_recipe_flutter/repository/user_memo_repository.dart';
 import 'package:pantry_recipe_flutter/entity/memo.dart';
 
-final userMemoListState = StateProvider<List<Memo>?>((ref) => null);
+final userMemoListProvider =
+StateNotifierProvider<MemoList, List<Memo>>(
+        (ref) => MemoList(const []));
 
 final userMemoViewController =
     Provider.autoDispose((ref) => UserMemoViewController(ref.read));
@@ -14,21 +16,12 @@ class UserMemoViewController {
   UserMemoViewController(this._read);
 
   Future<void> initState() async {
-    _read(userMemoListState.notifier).state =
+    _read(userMemoListProvider.notifier).state =
         await _read(userMemoRepository).getUserMemoList();
   }
 
   void dispose() {
-    _read(userMemoListState)?.clear();
-  }
-
-  String? alreadyIncludeCheck(Map<String, dynamic> inputMap) {
-    for (Memo userMemo in _read(userMemoListState.notifier).state ?? []) {
-      if (userMemo.name == inputMap['name']) {
-        return userMemo.id.toString();
-      }
-    }
-    return null;
+    _read(userMemoListProvider).clear();
   }
 
   Future<Map<String, dynamic>> makeBodyInput(
@@ -47,10 +40,11 @@ class UserMemoViewController {
     Map<String, dynamic> bodyInput = await _read(userMemoViewController)
         .makeBodyInput(
         name: memoName, password: password);
-    bool registerResult = await _read(userMemoRepository)
-        .saveUserMemo(bodyInput);
-    if (registerResult) {
-      _read(userMemoViewController).initState();
+    String memoId = await _read(userMemoRepository)
+        .registerUserMemo(bodyInput);
+    if (memoId != '') {
+      _read(userMemoListProvider.notifier).add(id: memoId, name: memoName, password: password);
+      _read(userMemoRepository).saveMemo();
       return true;
     } else {
       return false;
@@ -61,10 +55,11 @@ class UserMemoViewController {
     Map<String, dynamic> bodyInput = await _read(userMemoViewController)
         .makeBodyInput(
         name: memoName, password: password);
-    bool registerResult = await _read(userMemoRepository)
+    String memoId = await _read(userMemoRepository)
         .searchMemo(bodyInput);
-    if (registerResult) {
-      _read(userMemoViewController).initState();
+    if (memoId != '') {
+      _read(userMemoListProvider.notifier).add(id: memoId, name: memoName, password: password);
+      _read(userMemoRepository).saveMemo();
       return true;
     } else {
       return false;

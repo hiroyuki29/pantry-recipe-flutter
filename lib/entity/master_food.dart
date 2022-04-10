@@ -1,3 +1,5 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 class MasterFood {
   final int id;
   final String name;
@@ -48,7 +50,7 @@ class MasterFood {
   Map<String, dynamic> toMap() {
     return {
       'name': this.name,
-      'master_food_id': this.id,
+      'id': this.id,
       'category_id': this.categoryId,
       'unit_quantity': this.unitQuantity,
     };
@@ -62,4 +64,8 @@ class MasterFood {
       unitQuantity: map['unit_quantity'] as int,
     );
   }
+}
+
+class MasterFoodList extends StateNotifier<List<MasterFood>> {
+  MasterFoodList([List<MasterFood>? initialMemo]) : super(initialMemo ?? []);
 }

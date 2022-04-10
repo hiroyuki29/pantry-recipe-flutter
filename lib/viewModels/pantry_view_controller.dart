@@ -1,12 +1,19 @@
-import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 
-final pantryItemListState = StateProvider<List<PantryItem>?>((ref) => null);
-
+final pantryItemListProvider =
+StateNotifierProvider<PantryItemList, List<PantryItem>>(
+        (ref) => PantryItemList(const []));
+final filteredPantryItems = Provider<List<PantryItem>>((ref) {
+  final pantryItems = ref.watch(pantryItemListProvider);
+  if (pantryItems.isNotEmpty) {
+    pantryItems.sort((a, b) => a.categoryId.compareTo(b.categoryId));
+  }
+  return pantryItems.where((item) => !item.removed).toList();
+});
 final pantryViewController =
     Provider.autoDispose((ref) => PantryViewController(ref.read));
 
@@ -16,19 +23,23 @@ class PantryViewController {
   PantryViewController(this._read);
 
   Future<void> initState() async {
-    _read(pantryItemListState.notifier).state =
+    _read(pantryItemListProvider.notifier).state =
         await _read(pantryRepository).getPantryItemList();
   }
 
   void dispose() {
-    _read(pantryItemListState)?.clear();
+    _read(pantryItemListProvider).clear();
   }
 
-  String? alreadyIncludeCheck(Map<String, dynamic> inputMap) {
-    for (PantryItem pantryItem
-        in _read(pantryItemListState.notifier).state ?? []) {
-      if (pantryItem.name == inputMap['name']) {
-        return pantryItem.id.toString();
+  Future<String?> alreadyIncludeCheck(Item item) async {
+    String name = item.name;
+    for (PantryItem pantryItem in _read(pantryItemListProvider) ?? []) {
+      if (pantryItem.name == name) {
+        if (pantryItem.removed) {
+          _read(pantryItemListProvider.notifier).toggleRemove(pantryItem.id);
+          await _read(pantryRepository).savePantryItem();
+        }
+        return pantryItem.id;
       }
     }
     return null;
@@ -63,25 +74,26 @@ class PantryViewController {
   }
 
   Future<void> quantityEdit(PantryItem pantryItem, int quantity) async {
-    Map<String, dynamic> bodyInputMap =
-        await _read(pantryViewController).makeBodyInputForEdit(pantryItem);
-    bodyInputMap['quantity'] = quantity;
-    await _read(pantryRepository).updatePantryItem(bodyInputMap);
-    await _read(pantryViewController).initState();
+    _read(pantryItemListProvider.notifier).edit(id: pantryItem.id, quantity: quantity);
+    await _read(pantryRepository).savePantryItem();
   }
 
   Future<void> moveToPantry(Item item) async {
-    String? pantryItemId =
-    _read(pantryViewController).alreadyIncludeCheck(item.toMap());
+    String? pantryItemId = await _read(pantryViewController)
+        .alreadyIncludeCheck(item);
     if (pantryItemId != null) {
-      await _read(pantryRepository)
-          .incrementPantryItemQuantity(pantryItemId, item.unitQuantity);
+      _read(pantryItemListProvider.notifier)
+          .increment(id: pantryItemId, addQuantity: item.unitQuantity);
+      await _read(pantryRepository).savePantryItem();
     } else {
-      Map<String, dynamic> bodyInput =
-      await _read(pantryViewController).makeBodyInput(item);
-      await _read(pantryRepository)
-          .savePantryItem(jsonEncode(bodyInput));
+      PantryItem addPantryItem = PantryItem.fromUserItem(item);
+      _read(pantryItemListProvider.notifier).add(addPantryItem);
+      await _read(pantryRepository).savePantryItem();
     }
-    _read(pantryViewController).initState();
+  }
+
+  Future<void> deletePantryItem(String id) async {
+    _read(pantryItemListProvider.notifier).remove(id);
+    await _read(pantryRepository).savePantryItem();
   }
 }

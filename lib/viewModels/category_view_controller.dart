@@ -2,7 +2,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pantry_recipe_flutter/entity/category.dart';
 import 'package:pantry_recipe_flutter/repository/category_repository.dart';
 
-final categoryListState = StateProvider<List<Category>?>((ref) => null);
+final categoryListProvider =
+StateNotifierProvider<CategoryList, List<Category>>(
+        (ref) => CategoryList(const []));
+final sortedCategories = Provider<List<Category>>((ref) {
+  final categories = ref.watch(categoryListProvider);
+  if (categories.isNotEmpty) {
+    categories.sort((a, b) => a.id.compareTo(b.id));
+  }
+  return categories;
+});
 
 final isSelectedState = StateProvider<List<bool>>(
     (ref) => [true, false, false, false, false, false, false]);
@@ -16,12 +25,12 @@ class CategoryViewController {
   CategoryViewController(this._read);
 
   Future<void> initState() async {
-    _read(categoryListState.notifier).state =
+    _read(categoryListProvider.notifier).state =
         await _read(categoryRepository).getCategoryList();
   }
 
   void dispose() {
-    _read(categoryListState)?.clear();
+    _read(categoryListProvider.notifier).state.clear();
   }
 
   int toggleCategorySelect(index) {

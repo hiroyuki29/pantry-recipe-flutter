@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pantry_recipe_flutter/components/bottom_navigator.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
 import 'package:pantry_recipe_flutter/constants.dart';
@@ -10,6 +9,8 @@ import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
 import 'package:pantry_recipe_flutter/viewModels/master_food_view_controller.dart';
 import 'package:pantry_recipe_flutter/screens/add_new_item_screen.dart';
+import '../components/icon_button_for_download.dart';
+import '../components/icon_button_for_upload.dart';
 
 class ItemRegisterScreen extends HookConsumerWidget {
   const ItemRegisterScreen({Key? key}) : super(key: key);
@@ -21,19 +22,18 @@ class ItemRegisterScreen extends HookConsumerWidget {
       ref.read(masterFoodViewController).initState();
       return ref.read(userItemViewController).dispose;
     }, []);
-    final List<Item>? itemList = ref.watch(userItemListState);
-    final List<MasterFood>? masterFoodList = ref.watch(masterFoodListState);
-    if (itemList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
+    final itemList = ref.watch(filteredUsersItems);
+    final List<MasterFood>? masterFoodList = ref.watch(sortedMasterFoods);
     if (masterFoodList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
+      return const Center(child: CircularProgressIndicator());
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('アイテム登録'),
         actions: const [
+          IconButtonForUpload(),
+          IconButtonForDownload(),
           IconButtonForSignOut(),
         ],
       ),
@@ -119,7 +119,7 @@ class ItemTile extends HookConsumerWidget {
         trailing: IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            ref.read(userItemViewController).deleteItem(item);
+            ref.read(userItemViewController).deleteItem(item.id);
           },
         ),
       ),
@@ -140,10 +140,12 @@ class MasterFoodTile extends HookConsumerWidget {
         title: Text(masterFood.name),
         subtitle: Text('[単位] ${masterFood.unitQuantity.toString()}'),
         onTap: () async {
-          bool alreadyExist =
-              await ref.read(masterFoodViewController).moveToItem(masterFood);
-          if (alreadyExist) {
-            Fluttertoast.showToast(msg: "すでにあります");
+          String? alreadyExist = await ref
+              .read(userItemViewController)
+              .alreadyIncludeCheck(masterFood);
+          if (alreadyExist == null) {
+            Item addItem = Item.fromMasterFood(masterFood);
+            await ref.read(userItemViewController).add(addItem);
           }
         },
       ),

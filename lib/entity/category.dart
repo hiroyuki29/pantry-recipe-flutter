@@ -1,3 +1,5 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 class Category {
   final int id;
   final String name;
@@ -43,4 +45,8 @@ class Category {
       id: map['id'] as int,
     );
   }
+}
+
+class CategoryList extends StateNotifier<List<Category>> {
+  CategoryList([List<Category>? initialCategory]) : super(initialCategory ?? []);
 }

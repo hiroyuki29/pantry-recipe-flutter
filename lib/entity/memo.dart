@@ -1,5 +1,7 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 class Memo {
-  final int id;
+  final String id;
   final String name;
   final String password;
 
@@ -30,7 +32,7 @@ class Memo {
 
   Memo copyWith({
     String? name,
-    int? id,
+    String? id,
     String? password,
   }) {
     return Memo(
@@ -51,8 +53,23 @@ class Memo {
   factory Memo.fromMap(Map<String, dynamic> map) {
     return Memo(
       name: map['name'] as String,
-      id: map['id'] as int,
+      id: map['id'].toString(),
       password: map['password'] as String,
     );
+  }
+}
+
+class MemoList extends StateNotifier<List<Memo>> {
+  MemoList([List<Memo>? initialMemo]) : super(initialMemo ?? []);
+
+  void add({required String id, required String name, required String password}) {
+    state = [
+      ...state,
+      Memo(id: id, name: name, password: password),
+    ];
+  }
+
+  void remove(String id) {
+    state = state.where((memo) => memo.id != id).toList();
   }
 }

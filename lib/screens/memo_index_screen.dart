@@ -10,6 +10,8 @@ import 'package:pantry_recipe_flutter/repository/user_memo_repository.dart';
 import 'package:pantry_recipe_flutter/viewModels/user_memo_view_controller.dart';
 import 'package:pantry_recipe_flutter/screens/shopping_screen.dart';
 import 'package:pantry_recipe_flutter/screens/memo_item_register_screen.dart';
+import '../components/icon_button_for_download.dart';
+import '../components/icon_button_for_upload.dart';
 
 class MemoIndexScreen extends HookConsumerWidget {
   const MemoIndexScreen({Key? key}) : super(key: key);
@@ -20,9 +22,9 @@ class MemoIndexScreen extends HookConsumerWidget {
       ref.read(userMemoViewController).initState();
       return ref.read(userMemoViewController).dispose;
     }, []);
-    final List<Memo>? userMemoList = ref.watch(userMemoListState);
+    final List<Memo>? userMemoList = ref.watch(userMemoListProvider);
     if (userMemoList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
+      return const Center(child: CircularProgressIndicator());
     }
     String memoName = '';
     String password = '';
@@ -31,6 +33,8 @@ class MemoIndexScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('買い物メモリスト'),
         actions: const [
+          IconButtonForUpload(),
+          IconButtonForDownload(),
           IconButtonForSignOut(),
         ],
       ),

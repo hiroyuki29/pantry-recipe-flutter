@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pantry_recipe_flutter/screens/singin_and_signup_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pantry_recipe_flutter/viewModels/loading_view_controller.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'screens/reset_password_screen.dart';
 
@@ -49,6 +50,26 @@ class MyApp extends StatelessWidget {
             },
           );
         }
+      },
+      builder: (context, child) {
+        return Stack(
+          children: [
+            if (child != null) child,
+            // Indicator.
+            Consumer(builder: (context, ref, child) {
+              final isLoading = ref.watch(loadingServiceProvider);
+              if (isLoading) {
+                return const ColoredBox(
+                  color: Colors.black54,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+          ],
+        );
       },
       home: SignInAndSingUpScreen(),
     );

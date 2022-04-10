@@ -1,6 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pantry_recipe_flutter/repository/item_repository.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 
 final itemListState = StateProvider<List<Item>?>((ref) => null);
@@ -13,23 +12,8 @@ class ItemViewController {
 
   ItemViewController(this._read);
 
-  Future<void> initState() async {
-    _read(itemListState.notifier).state =
-        await _read(itemRepository).getItemList();
-  }
-
   void dispose() {
     _read(itemListState)?.clear();
-  }
-
-  String? alreadyIncludeCheck(Map<String, dynamic> inputMap) {
-    for (Item item in _read(itemListState.notifier).state ?? []) {
-      if (item.name == inputMap['name'] &&
-          item.categoryId == inputMap['category_id']) {
-        return item.id.toString();
-      }
-    }
-    return null;
   }
 
   Future<Map<String, dynamic>> makeBodyInput(

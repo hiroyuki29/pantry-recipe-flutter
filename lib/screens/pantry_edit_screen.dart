@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pantry_recipe_flutter/viewModels/category_view_controller.dart';
-import 'package:pantry_recipe_flutter/entity/category.dart';
 import 'package:pantry_recipe_flutter/entity/pantry.dart';
 import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
 import 'package:pantry_recipe_flutter/constants.dart';
@@ -15,14 +12,6 @@ class PantryEditScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    useEffect(() {
-      ref.read(categoryViewController).initState();
-      return ref.read(categoryViewController).dispose;
-    }, []);
-    final List<Category>? categoryList = ref.watch(categoryListState);
-    if (categoryList == null) {
-      return Container(child: const Center(child: CircularProgressIndicator()));
-    }
 
     int quantity = pantryItem.quantity;
 

@@ -1,12 +1,19 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pantry_recipe_flutter/viewModels/pantry_view_controller.dart';
 import 'package:pantry_recipe_flutter/repository/memo_item_repository.dart';
-import 'package:pantry_recipe_flutter/repository/pantry_repository.dart';
 import 'package:pantry_recipe_flutter/entity/item.dart';
 import 'package:pantry_recipe_flutter/entity/memo_item.dart';
-import 'dart:convert';
 
-final memoItemListState = StateProvider<List<MemoItem>?>((ref) => null);
+final memoItemListProvider =
+    StateNotifierProvider<MemoItemList, List<MemoItem>>(
+        (ref) => MemoItemList(const []));
+final filteredMemoItems = Provider<List<MemoItem>>((ref) {
+  final memoItems = ref.watch(memoItemListProvider);
+  if (memoItems.isNotEmpty) {
+    memoItems.sort((a, b) => a.categoryId.compareTo(b.categoryId));
+  }
+  return memoItems.where((item) => !item.removed).toList();
+});
 
 final memoItemViewController =
     Provider.autoDispose((ref) => MemoItemViewController(ref.read));
@@ -16,100 +23,57 @@ class MemoItemViewController {
 
   MemoItemViewController(this._read);
 
-  Future<void> initState({required int memoId}) async {
-    _read(memoItemListState)?.clear();
-    _read(memoItemListState.notifier).state =
+  Future<void> initState({required String memoId}) async {
+    _read(memoItemListProvider.notifier).state =
         await _read(memoItemRepository).getMemoItemList(memoId);
   }
 
   void dispose() {
-    _read(memoItemListState)?.clear();
+    _read(memoItemListProvider).clear();
   }
 
-  String? alreadyIncludeCheck(Map<String, dynamic> inputMap) {
-    for (MemoItem memoItem in _read(memoItemListState.notifier).state ?? []) {
+  Future<String?> alreadyIncludeCheck(
+      {required Item item, required String memoId}) async {
+    Map<String, dynamic> inputMap = item.toMap();
+    for (MemoItem memoItem in _read(memoItemListProvider) ?? []) {
       if (memoItem.name == inputMap['name']) {
-        return memoItem.id.toString();
+        if (memoItem.removed) {
+          _read(memoItemListProvider.notifier).toggleRemove(memoItem.id);
+          await _read(memoItemRepository).saveMemoItem(memoId);
+        }
+        return memoItem.id;
       }
     }
     return null;
   }
 
-  Future<Map<String, dynamic>> makeBodyInput(Item item, int memoId) async {
-    final prefs = await SharedPreferences.getInstance();
-    return {
-      'memo_id': memoId,
-      'item_id': item.itemId,
-      'quantity': item.unitQuantity,
-      'access-token': prefs.getString('access-token'),
-      'client': prefs.getString('client'),
-      'uid': prefs.getString('uid'),
-    };
-  }
-
-  Future<Map<String, dynamic>> makeBodyInputForToggle(MemoItem memoItem) async {
-    final prefs = await SharedPreferences.getInstance();
-    return {
-      'id': memoItem.id,
-      'memo_id': memoItem.memoId,
-      'item_id': memoItem.itemId,
-      'quantity': memoItem.quantity,
-      'done': memoItem.done,
-      'access-token': prefs.getString('access-token'),
-      'client': prefs.getString('client'),
-      'uid': prefs.getString('uid'),
-    };
-  }
-
-  Future<Map<String, dynamic>> makeBodyInputFromMemo(MemoItem memoItem) async {
-    final prefs = await SharedPreferences.getInstance();
-    int? userId = prefs.getInt('user_id');
-    return {
-      'user_id': userId,
-      'item_id': memoItem.itemId,
-      'quantity': memoItem.quantity,
-      'access-token': prefs.getString('access-token'),
-      'client': prefs.getString('client'),
-      'uid': prefs.getString('uid'),
-    };
-  }
-
-  Future<void> toggleDoneStatus(MemoItem memoItem, int memoId) async {
-    memoItem.done = !memoItem.done;
-    Map<String, dynamic> bodyInput =
-        await _read(memoItemViewController).makeBodyInputForToggle(memoItem);
-    await _read(memoItemRepository).updateMemoItem(bodyInput);
-    await _read(memoItemViewController).initState(memoId: memoId);
-  }
-
-  Future<void> moveMemoItemToPantry(List<MemoItem> memoItemList) async {
+  Future<void> moveMemoItemToPantry({required List<MemoItem> memoItemList, required String memoId}) async {
     for (MemoItem memoItem in memoItemList) {
       if (memoItem.done) {
-        Map<String, dynamic> bodyInput =
-            await _read(memoItemViewController).makeBodyInputFromMemo(memoItem);
-        await _read(pantryRepository).moveFromMemo(bodyInput);
-        await _read(memoItemRepository).deleteMemoItem(memoItem);
+        Item item = Item.fromMemo(memoItem);
+        await _read(pantryViewController).moveToPantry(item);
+        _read(memoItemListProvider.notifier).remove(memoItem.id);
+        await _read(memoItemRepository).saveMemoItem(memoId);
       }
     }
   }
 
-  Future<void> moveItemToMemo(Item item, int memoId) async {
-    String? memoItemId = _read(memoItemViewController)
-        .alreadyIncludeCheck(item.toMap());
+  Future<void> moveItemToMemo(Item item, String memoId) async {
+    String? memoItemId = await _read(memoItemViewController)
+        .alreadyIncludeCheck(item: item, memoId: memoId);
     if (memoItemId != null) {
-      await _read(memoItemRepository)
-          .incrementMemoItemQuantity(memoItemId, item.unitQuantity);
+      _read(memoItemListProvider.notifier)
+          .increment(id: memoItemId, addQuantity: item.unitQuantity);
+      await _read(memoItemRepository).saveMemoItem(memoId);
     } else {
-      Map<String, dynamic> bodyInput = await _read(memoItemViewController)
-          .makeBodyInput(item, memoId);
-      await _read(memoItemRepository)
-          .saveMemoItem(jsonEncode(bodyInput));
+      MemoItem addMemoItem = MemoItem.fromUserItem(item: item, memoId: memoId);
+      _read(memoItemListProvider.notifier).add(addMemoItem);
+      await _read(memoItemRepository).saveMemoItem(memoId);
     }
-    _read(memoItemViewController).initState(memoId: memoId);
   }
 
-  Future<void> deleteMemoItem(MemoItem item, int memoId) async {
-    await _read(memoItemRepository).deleteMemoItem(item);
-    _read(memoItemViewController).initState(memoId: memoId);
+  Future<void> deleteMemoItem(MemoItem item, String memoId) async {
+    _read(memoItemListProvider.notifier).remove(item.id);
+    await _read(memoItemRepository).saveMemoItem(memoId);
   }
 }

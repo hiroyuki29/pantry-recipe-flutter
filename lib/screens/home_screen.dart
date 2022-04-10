@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_download.dart';
 import 'package:pantry_recipe_flutter/components/rounded_button.dart';
 import 'package:pantry_recipe_flutter/components/icon_button_for_signout.dart';
+import 'package:pantry_recipe_flutter/components/icon_button_for_upload.dart';
 import 'package:pantry_recipe_flutter/screens/memo_index_screen.dart';
 import 'package:pantry_recipe_flutter/screens/pantry_show_screen.dart';
 import 'package:pantry_recipe_flutter/screens/item_register_screen.dart';
@@ -15,6 +17,8 @@ class HomeScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('Pantry Recipe'),
         actions: const [
+          IconButtonForUpload(),
+          IconButtonForDownload(),
           IconButtonForSignOut(),
         ],
       ),

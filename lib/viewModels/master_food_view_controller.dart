@@ -1,10 +1,17 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pantry_recipe_flutter/entity/master_food.dart';
 import 'package:pantry_recipe_flutter/repository/master_food_repository.dart';
-import 'package:pantry_recipe_flutter/viewModels/user_item_view_controller.dart';
-import 'package:pantry_recipe_flutter/repository/user_item_repository.dart';
 
-final masterFoodListState = StateProvider<List<MasterFood>?>((ref) => null);
+final masterFoodListProvider =
+StateNotifierProvider<MasterFoodList, List<MasterFood>>(
+        (ref) => MasterFoodList(const []));
+final sortedMasterFoods = Provider<List<MasterFood>>((ref) {
+  final masterFoods = ref.watch(masterFoodListProvider);
+  if (masterFoods.isNotEmpty) {
+    masterFoods.sort((a, b) => a.id.compareTo(b.id));
+  }
+  return masterFoods;
+});
 
 final masterFoodViewController =
     Provider.autoDispose((ref) => MasterFoodViewController(ref.read));
@@ -15,27 +22,12 @@ class MasterFoodViewController {
   MasterFoodViewController(this._read);
 
   Future<void> initState() async {
-    _read(masterFoodListState.notifier).state =
+    _read(masterFoodListProvider.notifier).state =
         await _read(masterFoodRepository).getMasterFoodList();
   }
 
   void dispose() {
-    _read(masterFoodListState)?.clear();
+    _read(masterFoodListProvider).clear();
   }
 
-  Future<bool> moveToItem(MasterFood masterFood) async {
-    Map<String, dynamic> newItemMap =
-        await _read(masterFoodRepository).toItemMap(masterFood);
-    Map<String, dynamic> newUserItemMap =
-        await _read(masterFoodRepository).toUserItemMap(masterFood);
-    String? checkedResult =
-        _read(userItemViewController).alreadyIncludeCheck(newItemMap);
-    if (checkedResult != null) {
-      return true;
-    } else {
-      await _read(userItemRepository).saveUserItem(newUserItemMap);
-      _read(userItemViewController).initState();
-      return false;
-    }
-  }
 }
