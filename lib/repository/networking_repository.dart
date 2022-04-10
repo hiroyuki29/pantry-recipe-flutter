@@ -143,6 +143,8 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
 
   @override
   Future<void> upload() async {
+    Map<String, int> newItemID = {};
+
     final prefs = await SharedPreferences.getInstance();
     String accessToken = prefs.getString('access-token') ?? '';
     String uid = prefs.getString('uid') ?? '';
@@ -166,6 +168,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
           dynamic responseBody = response['body'];
           dynamic responseData = jsonDecode(responseBody)['data'];
           bodyInputMap['item_id'] =  responseData['id'];
+          newItemID[userItem.name] = bodyInputMap['item_id'];
         }
           await networkHelper.postData(
               urlInput: 'user_items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
@@ -187,6 +190,9 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
         Map<String, dynamic> bodyInputMap = await _read(networkingRepository)
             .makeBodyMemoItem(memoItem, memo.id);
         if (memoItem.removed == false && memoItem.newCreate) {
+          if (memoItem.itemId == 0){
+            bodyInputMap['item_id'] = newItemID[memoItem.name];
+          }
           await networkHelper.postData(
               urlInput: 'memo_items',
               headerInput: _userHeader,
@@ -205,6 +211,9 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
     final pantryItemList = _read(pantryItemListProvider);
     for (PantryItem pantryItem in pantryItemList){
       Map<String, dynamic> bodyInputMap = await _read(networkingRepository).makeBodyPantryItem(pantryItem);
+      if (pantryItem.itemId == 0){
+        bodyInputMap['item_id'] = newItemID[pantryItem.name];
+      }
       if(pantryItem.removed == false){
         if (pantryItem.newCreate){
           await networkHelper.postData(
