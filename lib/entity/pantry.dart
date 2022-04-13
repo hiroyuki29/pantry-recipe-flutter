@@ -28,7 +28,6 @@ class PantryItem {
     this.edited = false,
   });
 
-  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PantryItem &&
@@ -43,15 +42,6 @@ class PantryItem {
           newCreate == other.newCreate &&
           edited == other.edited
       );
-
-  @override
-  int get hashCode =>
-      name.hashCode ^
-      id.hashCode ^
-      itemId.hashCode ^
-      categoryId.hashCode ^
-      masterFoodId.hashCode ^
-      quantity.hashCode;
 
   @override
   String toString() {

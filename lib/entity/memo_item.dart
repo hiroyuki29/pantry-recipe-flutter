@@ -14,6 +14,7 @@ class MemoItem {
   bool done;
   bool removed;
   bool newCreate;
+  bool edited;
 
   MemoItem({
     required this.id,
@@ -25,6 +26,7 @@ class MemoItem {
     required this.done,
     this.removed = false,
     this.newCreate = false,
+    this.edited = false,
   });
 
   @override
@@ -40,7 +42,9 @@ class MemoItem {
           quantity == other.quantity &&
           done == other.done &&
           removed == other.removed &&
-          newCreate == other.newCreate);
+          newCreate == other.newCreate &&
+          edited == other.edited
+      );
 
   @override
   String toString() {
@@ -54,6 +58,7 @@ class MemoItem {
         'done: $done,' +
         'removed: $removed,' +
         'newCreate: $newCreate,' +
+        'edited: $edited,' +
         '}';
   }
 
@@ -67,6 +72,7 @@ class MemoItem {
     bool? done,
     bool? removed,
     bool? newCreate,
+    bool? edited,
   }) {
     return MemoItem(
       name: name ?? this.name,
@@ -78,6 +84,7 @@ class MemoItem {
       done: done ?? this.done,
       removed: removed ?? this.removed,
       newCreate: newCreate ?? this.newCreate,
+      edited: edited ?? this.edited,
     );
   }
 
@@ -92,6 +99,7 @@ class MemoItem {
       'done': this.done,
       'removed': this.removed,
       'newCreate': this.newCreate,
+      'edited': this.edited,
     };
   }
 
@@ -105,6 +113,9 @@ class MemoItem {
     if (map['newCreate'] == null){
       map['newCreate'] = false;
     }
+    if (map['edited'] == null){
+      map['edited'] = false;
+    }
     return MemoItem(
       name: map['name'] as String,
       id: map['id'].toString(),
@@ -115,6 +126,7 @@ class MemoItem {
       done: map['done'] as bool,
       removed: map['removed'] as bool,
       newCreate: map['newCreate'] as bool,
+      edited: map['edited'] as bool,
     );
   }
 
@@ -129,6 +141,7 @@ class MemoItem {
       done: false,
       removed: false,
       newCreate: true,
+      edited: false,
     );
   }
 }
@@ -179,6 +192,7 @@ class MemoItemList extends StateNotifier<List<MemoItem>> {
           item.copyWith(
             quantity: item.quantity + addQuantity,
             done: false,
+            edited: true,
           )
         else
           item,
