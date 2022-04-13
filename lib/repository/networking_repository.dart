@@ -207,7 +207,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
           await networkHelper.deleteData(
               urlInput: 'memo_items/${memoItem.id}',
               headerInput: _userHeader,
-              bodyInput: jsonEncode(_userInfo));
+              bodyInput: jsonEncode(bodyInputMap));
         }
       }
     }
