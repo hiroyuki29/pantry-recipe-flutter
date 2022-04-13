@@ -156,6 +156,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
     };
 
     NetworkHelper networkHelper = NetworkHelper();
+
     //upload user_items
     await _read(userItemViewController).initState();
     final userItemList = _read(userItemListProvider);
@@ -189,19 +190,24 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
       for (MemoItem memoItem in itemList) {
         Map<String, dynamic> bodyInputMap = await _read(networkingRepository)
             .makeBodyMemoItem(memoItem, memo.id);
-        if (memoItem.removed == false && memoItem.newCreate) {
-          if (memoItem.itemId == 0){
-            bodyInputMap['item_id'] = newItemID[memoItem.name];
+        if (memoItem.itemId == 0){
+          bodyInputMap['item_id'] = newItemID[memoItem.name];
+        }
+        if(memoItem.removed == false){
+          if (memoItem.newCreate){
+            await networkHelper.postData(
+                urlInput: 'memo_items', headerInput: _userHeader, bodyInput: jsonEncode(bodyInputMap));
+          } else if(memoItem.edited) {
+            await networkHelper.putData(
+                urlInput: 'memo_items/${memoItem.id}',
+                headerInput: _userHeader,
+                bodyInput: jsonEncode(bodyInputMap));
           }
-          await networkHelper.postData(
-              urlInput: 'memo_items',
-              headerInput: _userHeader,
-              bodyInput: jsonEncode(bodyInputMap));
         } else if (memoItem.removed && memoItem.newCreate == false){
           await networkHelper.deleteData(
               urlInput: 'memo_items/${memoItem.id}',
               headerInput: _userHeader,
-              bodyInput: jsonEncode(bodyInputMap));
+              bodyInput: jsonEncode(_userInfo));
         }
       }
     }
