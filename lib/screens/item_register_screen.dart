@@ -32,8 +32,8 @@ class ItemRegisterScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('アイテム登録'),
         actions: const [
-          IconButtonForUpload(),
-          IconButtonForDownload(),
+          IconButtonForUpload(memoId: null),
+          IconButtonForDownload(memoId: null),
           IconButtonForSignOut(),
         ],
       ),

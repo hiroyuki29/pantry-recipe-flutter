@@ -28,10 +28,10 @@ class ShoppingScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('買い物メモ'),
-        actions: const [
-          IconButtonForUpload(),
-          IconButtonForDownload(),
-          IconButtonForSignOut(),
+        actions: [
+          IconButtonForUpload(memoId: memoId),
+          IconButtonForDownload(memoId: memoId),
+          const IconButtonForSignOut(),
         ],
       ),
       body: Column(

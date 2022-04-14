@@ -33,8 +33,8 @@ class MemoIndexScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('買い物メモリスト'),
         actions: const [
-          IconButtonForUpload(),
-          IconButtonForDownload(),
+          IconButtonForUpload(memoId: null),
+          IconButtonForDownload(memoId: null),
           IconButtonForSignOut(),
         ],
       ),

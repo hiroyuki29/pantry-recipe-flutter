@@ -5,15 +5,18 @@ import 'package:pantry_recipe_flutter/viewModels/loading_view_controller.dart';
 
 class IconButtonForDownload extends HookConsumerWidget {
   const IconButtonForDownload({
+    required this.memoId,
     Key? key,
   }) : super(key: key);
+
+  final String? memoId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
       icon: const Icon(Icons.download),
       onPressed: () async{
-        await ref.read(loadingServiceProvider.notifier).wrap(ref.read(networkingRepository).download());
+        await ref.read(loadingServiceProvider.notifier).wrap(ref.read(networkingRepository).download(memoId));
       },
     );
   }

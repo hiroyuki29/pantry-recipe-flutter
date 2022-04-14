@@ -28,8 +28,8 @@ class PantryRegisterScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('パントリー登録'),
         actions: const [
-          IconButtonForUpload(),
-          IconButtonForDownload(),
+          IconButtonForUpload(memoId: null),
+          IconButtonForDownload(memoId: null),
           IconButtonForSignOut(),
         ],
       ),

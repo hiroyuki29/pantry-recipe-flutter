@@ -47,7 +47,7 @@ class UserRepositoryImpl implements UserRepository {
     await prefs.setString('client', responseData['headers']['client']);
     Map<String, dynamic> responseBody = jsonDecode(responseData['body']);
     await prefs.setInt('user_id', responseBody['data']['id']);
-    _read(networkingRepository).download();
+    _read(networkingRepository).download(null);
   }
 
   @override
@@ -63,7 +63,7 @@ class UserRepositoryImpl implements UserRepository {
     await prefs.setString('client', responseData['headers']['client']);
     Map<String, dynamic> responseBody = jsonDecode(responseData['body']);
     await prefs.setInt('user_id', responseBody['data']['id']);
-    _read(networkingRepository).download();
+    _read(networkingRepository).download(null);
   }
 
   @override

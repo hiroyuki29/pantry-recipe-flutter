@@ -29,10 +29,10 @@ class MemoItemRegisterScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('買い物メモ登録'),
-        actions: const [
-          IconButtonForUpload(),
-          IconButtonForDownload(),
-          IconButtonForSignOut(),
+        actions: [
+          IconButtonForUpload(memoId: memoId),
+          IconButtonForDownload(memoId: memoId),
+          const IconButtonForSignOut(),
         ],
       ),
       body: Column(
