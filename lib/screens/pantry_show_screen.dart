@@ -26,8 +26,8 @@ class PantryShowScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('パントリー'),
         actions: const [
-          IconButtonForUpload(),
-          IconButtonForDownload(),
+          IconButtonForUpload(memoId: null),
+          IconButtonForDownload(memoId: null),
           IconButtonForSignOut(),
         ],
       ),

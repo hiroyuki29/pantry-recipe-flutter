@@ -19,8 +19,8 @@ final networkingRepository = Provider.autoDispose<NetworkingRepository>(
     (ref) => NetworkingRepositoryImpl(ref.read));
 
 abstract class NetworkingRepository {
-  Future<String> download();
-  Future<void> upload();
+  Future<String> download(String? memoId);
+  Future<void> upload(String? memoId);
   Future<Map<String, dynamic>> makeBodyUserItem(Item item);
   Future<Map<String, dynamic>> makeBodyMemoItem(MemoItem item, String memoId);
   Future<Map<String, dynamic>> makeBodyPantryItem(PantryItem pantryItem);
@@ -45,7 +45,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
   };
 
   @override
-  Future<String> download() async {
+  Future<String> download(String? memoId) async {
     final prefs = await SharedPreferences.getInstance();
     String accessToken = prefs.getString('access-token') ?? '';
     String uid = prefs.getString('uid') ?? '';
@@ -121,7 +121,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
           memoItemList.map((item) => json.encode(item.toMap())).toList();
       String editMemoItemListKey = _memoItemListKey + memo.id;
       await prefs.setStringList(editMemoItemListKey, memoItemListForPref);
-      await _read(memoItemViewController).initState(memoId: memo.id);
+      await _read(memoItemViewController).initState(memoId: memoId ?? memo.id);
     }
 
     // get pantry_items
@@ -142,7 +142,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
   }
 
   @override
-  Future<void> upload() async {
+  Future<void> upload(String? memoId) async {
     Map<String, int> newItemID = {};
 
     final prefs = await SharedPreferences.getInstance();
@@ -237,7 +237,7 @@ class NetworkingRepositoryImpl implements NetworkingRepository {
             bodyInput: jsonEncode(_userInfo));
       }
     }
-    await _read(networkingRepository).download();
+    await _read(networkingRepository).download(memoId);
   }
 
   @override
